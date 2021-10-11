@@ -110,6 +110,7 @@
                 <li class="pt-2">{{ p.des }}</li>
               </ul>
             </v-card-text>
+            
 
             <!-- <v-card-text>
               <validation-provider
@@ -137,7 +138,9 @@
         </v-flex>
       </v-layout>
     </v-container>
-    <!-- ---------------------------------------------------------------------------------------------------------- -->
+    
+    <!---------------------------------------------------------------------------------------------------------------->
+        
     <v-container class="flex mb-40">
       <v-layout row wrap>
         <v-flex xs12 sm6 md6 lg3 wrap v-for="uta in productInfo" :key="uta.id" justify-center>
@@ -147,17 +150,34 @@
             </v-responsive>
             <v-card-text class="justify-center text-xs break-words white--text">
               <ul>
-                <li>{{ uta.product_name }}</li>
-                <li class="pt-2">{{ uta.band_name }}</li>
+                <li>{{ uta.name }}</li>
+                <li class="pt-2">{{ uta.band }}</li>
                 <li class="pt-2">{{ uta.price }} yen</li>
-                <li class="pt-2">{{ uta.product_des }}</li>
+                <li class="pt-2">{{ uta.des }}</li>
               </ul>
             </v-card-text>
 
             <v-card-actions class="justify-center">
-              <v-btn @click.prevent="productInCart(uta)" color="#FFB6C1" small justify-end>
-                <v-icon small>shopping_cart</v-icon>
-              </v-btn>
+              
+                <!-- <li>
+                  <template>
+                    <vue-numeric-input
+                      placeholder="0"
+                      v-model="quantity"
+                      :min="1"
+                      :max="10"
+                      inline
+                      align="center"
+                      controls
+                    ></vue-numeric-input>
+                  </template>
+                </li>-->
+                
+                  <v-btn @click.prevent="productInCart(uta)" color="#FFB6C1" small>
+                    <v-icon small>shopping_cart</v-icon>
+                  </v-btn>
+                
+              
             </v-card-actions>
 
             <v-card-actions class="justify-center">
@@ -182,12 +202,27 @@
                 <v-layout wrap>
                   <v-card-text class="justify-start text-sm w-40 truncate white--text">
                     <span>{{ cInfo.name }}</span>
-                  </v-card-text>
-
+                  </v-card-text>                                                            
                   <v-card-actions>
-                    <v-btn @click="deleteCart(cInfo.id)" color="red darken-4">
-                      <v-icon>delete</v-icon>
-                    </v-btn>
+                    <ul>
+                      <!-- <li>
+                        <template>
+                          <vue-numeric-input
+                            :model-value="1"
+                            :min="1"
+                            :max="10"
+                            inline
+                            align="center"
+                            controls
+                          ></vue-numeric-input>
+                        </template>
+                      </li> -->
+                      <li class="">
+                        <v-btn @click="deleteCart(cInfo.id)" color="red darken-4">
+                          <v-icon>delete</v-icon>
+                        </v-btn>
+                      </li>
+                    </ul>
                   </v-card-actions>
                 </v-layout>
               </v-card>
@@ -223,6 +258,7 @@ import Navbar from '@/components/Navbar.vue'
 import Footer from '@/components/Footer.vue'
 import { required, max, max_value, numeric } from 'vee-validate/dist/rules'
 import { extend, ValidationObserver, ValidationProvider, setInteractionMode } from 'vee-validate'
+// import VueNumericInput from 'vue-numeric-input'
 
 setInteractionMode('eager')
 
@@ -272,10 +308,15 @@ export default {
       addCartMode: false,
       editId: '',
       addCartId: '',
+      click: false,
+      quantity1: '',
+      quantity2: null,
+      cart: '',
+
       i: 'https://files.catbox.moe/vq3v5e.png',
-      // url: 'http://localhost:5001/productInfo',
+      url: 'http://localhost:5001/productInfo',
       carturl: 'http://localhost:5002/cartInfo',
-      url: 'https://www.utastore.team:3006'
+      // url: 'https://www.utastore.team:3006'
 
     }
 
@@ -286,6 +327,7 @@ export default {
     Footer,
     ValidationProvider,
     ValidationObserver,
+    // VueNumericInput,
 
   },
 
@@ -294,6 +336,9 @@ export default {
   },
 
   methods: {
+    // disabled() {
+    //   this.click = true;
+    // },
 
     toggleDone() {
       this.addedit = !this.addedit
@@ -445,12 +490,15 @@ export default {
       this.bandForm = utaInfo.band
       this.priceForm = utaInfo.price
       this.desForm = utaInfo.des
+      this.quantity = utaInfo.quantity
+
       this.addNewProductToCart({
         id: this.editid,
         name: this.nameForm,
         band: this.bandForm,
         price: this.priceForm,
-        des: this.desForm
+        des: this.desForm,
+        quan: this.quantity
       })
     },
 
@@ -466,19 +514,22 @@ export default {
             name: newProductToCart.name,
             band: newProductToCart.band,
             price: newProductToCart.price,
-            des: newProductToCart.des
+            des: newProductToCart.des,
+            quan: newProductToCart.quan
           })
         })
         const data = await res.json()
         this.cartInfo = [...this.cartInfo, data]
+        this.click = true;
       }
+
       catch (error) { console.log(`add to cart failed: ${error}`) }
     },
 
     // GET
     async getProductForm() {
       try {
-        const res = await fetch(this.url + "/customers")
+        const res = await fetch(this.url)
         const getdata = await res.json()
         return getdata
       }

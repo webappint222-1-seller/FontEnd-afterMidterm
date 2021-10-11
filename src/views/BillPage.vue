@@ -4,7 +4,7 @@
     <v-container class="flex">
       <v-layout column>
         <v-flex xs12 sm12 md12 lg12 class="justify-center">
-          <v-card flat class="pa-4 mt-10 overflow-y-scroll" color="black" width="auto" height="600">
+          <v-card flat class="pa-4 mt-10 overflow-y-scroll" dark color="" width="auto" height="600">
             <span class="text-lg white--text">SUMMARY</span>
 
             <div v-for="cInfo in cartInfo" :key="cInfo.id">
@@ -20,21 +20,34 @@
                       </li>
                       <li>
                         <span class>Order Price: {{ cInfo.price }} yen</span>
-                      </li>
+                      </li>                                            
                     </ul>
-                  </v-card-text>
-
-                  <!-- <v-card-actions>
-                    <v-btn @click="deleteCart(cInfo.id)" color="red darken-4">
+                  </v-card-text>                                                                
+                  <v-card-actions>                    
+                    <!-- <v-btn @click="deleteCart(cInfo.id)" color="red darken-4">
                       <v-icon>delete</v-icon>
-                    </v-btn>
-                  </v-card-actions>-->
+                    </v-btn> -->
+                  </v-card-actions>                  
                 </v-layout>
+                <div>
+                <template>
+                          <vue-numeric-input
+                            :model-value="1"
+                            v-model="quantity"
+                            :min="1"
+                            :max="10"
+                            inline
+                            align="center"
+                            controls
+                            class ="ml-20 mb-5"
+                          ></vue-numeric-input>
+                        </template>
+                        </div>
               </v-card>
             </div>
 
             <v-card-text class="text-sm truncate white--text">
-              <ul>
+              <ul justify-center>
                 <li class= "mb-4 ml-20">
                   <v-btn
                     v-on:click="countPiece(), countPrice()"
@@ -46,21 +59,15 @@
                   </v-btn>
                 </li>
 
-                <li class="mb-4 ml-10">
+                <li class="mb-2 ml-6 text-xl">
                   <span>Total Quantity: {{ totalQuantity }} Piece</span>
                 </li>
-                <li class="ml-10">
+                <li class="ml-6 text-xl">
                   <span>Total Price: {{ totalPrice }} yen</span>
                 </li>
 
-                <!-- <li>
-                  <v-btn :disabled="clickPrice" class= "mr-12">
-                  <v-icon>attach_money</v-icon>
-                  <h1 v-on:click="countPrice()">{{ totalPrice }}</h1>
-                </v-btn>
-                  <span>Total Price: {{ totalPrice }} yen</span>
-                </li>-->
-              </ul>
+               
+              </ul>          
             </v-card-text>
           </v-card>
         </v-flex>
@@ -78,6 +85,7 @@
 <script>
 
 import Navbar from '@/components/Navbar.vue'
+import VueNumericInput from 'vue-numeric-input'
 
 export default {
   name: 'Bill',
@@ -89,10 +97,13 @@ export default {
       url: 'http://localhost:5001/productInfo',
       carturl: 'http://localhost:5002/cartInfo',
       click: false,
+      // q: ''
+      
     }
   },
   components: {
-    Navbar
+    Navbar,
+    VueNumericInput
 
   },
   methods: {
@@ -110,7 +121,8 @@ export default {
       console.log(`in loop`)
 
       for (let i = 0; i < this.cartInfo.length; i++) {
-        this.totalQuantity += 1
+        // let q = this.q
+        this.totalQuantity += this.quantity
         this.click = true;
       }
 
@@ -119,7 +131,7 @@ export default {
     countPrice() {
       console.log(`in price`)
       for (let i = 0; i < this.cartInfo.length; i++) {
-        this.totalPrice += this.cartInfo[i].price
+        this.totalPrice += this.cartInfo[i].price *= this.quantity
         this.click = true;
       }
     },
