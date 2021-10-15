@@ -4,51 +4,55 @@
     <v-container class="flex">
       <v-layout column>
         <v-flex xs12 sm12 md12 lg12 class="justify-center">
-          <v-card flat class="pa-4 mt-10 overflow-y-scroll" dark color="" width="auto" height="600">
+          <v-card flat class="pa-4 mt-10 overflow-y-scroll" dark color width="auto" height="600">
             <span class="text-lg white--text">SUMMARY</span>
 
             <div v-for="cInfo in cartInfo" :key="cInfo.id">
-              <v-card dark flat class="w-80 h-auto my-5" color="#C0C0C0">
+              <v-card dark flat class="w-80 h-auto mt-2" color="#C0C0C0">
                 <v-layout>
-                  <v-card-text class="text-sm white--text">
-                    <ul class>
-                      <li>
-                        <span class>Order Number: {{ cInfo.id }}</span>
-                      </li>
+                  <v-card-text class="text-sm black--text">
+                    <ul class>                      
                       <li>
                         <span class>Order Name: {{ cInfo.name }} By. {{ cInfo.band }}</span>
                       </li>
                       <li>
                         <span class>Order Price: {{ cInfo.price }} yen</span>
-                      </li>                                            
+                      </li>
+                      <li>
+                        <span class>Total Order Price: {{ cInfo.totalPrice }} yen</span>
+                      </li>
                     </ul>
-                  </v-card-text>                                                                
-                  <v-card-actions>                    
-                    <!-- <v-btn @click="deleteCart(cInfo.id)" color="red darken-4">
-                      <v-icon>delete</v-icon>
-                    </v-btn> -->
-                  </v-card-actions>                  
+                  </v-card-text>                  
                 </v-layout>
-                <div>
-                <template>
-                          <vue-numeric-input
-                            :model-value="1"
-                            v-model="quantity"
-                            :min="1"
-                            :max="10"
-                            inline
-                            align="center"
-                            controls
-                            class ="ml-20 mb-5"
-                          ></vue-numeric-input>
-                        </template>
-                        </div>
+                
+                <ul>
+                  <li>
+                  <template>
+                    <vue-numeric-input
+                      :model-value="1"
+                      v-model="quantity"
+                      :min="1"
+                      :max="10"
+                      :inputtable="false"
+                      inline                      
+                      align="center"
+                      controls
+                      class="ml-14 mb-2 bg-white text-black rounded-lg"
+                    ></vue-numeric-input>
+                  </template>
+                  </li>
+                <li>
+                <v-btn @click="deleteCart(cInfo.id)" color="red darken-4" class ="ml-24 mb-2">
+                  <v-icon>delete</v-icon>
+                </v-btn>
+                </li>
+                </ul>
               </v-card>
             </div>
 
             <v-card-text class="text-sm truncate white--text">
               <ul justify-center>
-                <li class= "mb-4 ml-20">
+                <li class="mb-4 ml-20">
                   <v-btn
                     v-on:click="countPiece(), countPrice()"
                     :disabled="click"
@@ -65,9 +69,7 @@
                 <li class="ml-6 text-xl">
                   <span>Total Price: {{ totalPrice }} yen</span>
                 </li>
-
-               
-              </ul>          
+              </ul>
             </v-card-text>
           </v-card>
         </v-flex>
@@ -86,6 +88,7 @@
 
 import Navbar from '@/components/Navbar.vue'
 import VueNumericInput from 'vue-numeric-input'
+// import VueNumberInput from '@chenfengyuan/vue-number-input';
 
 export default {
   name: 'Bill',
@@ -97,13 +100,15 @@ export default {
       url: 'http://localhost:5001/productInfo',
       carturl: 'http://localhost:5002/cartInfo',
       click: false,
+      value: 1
       // q: ''
-      
+
     }
   },
   components: {
     Navbar,
-    VueNumericInput
+    VueNumericInput,
+    // VueNumberInput
 
   },
   methods: {
@@ -115,6 +120,19 @@ export default {
 
       }
       catch (error) { console.log(`get summary failed: ${error}`) }
+    },
+
+    async deleteCart(deleteCartId) {
+      try {
+        await fetch(`${this.carturl}/${deleteCartId}`, {
+          method: 'DELETE'
+        })
+        this.cartInfo = this.cartInfo.filter(cInfo => cInfo.id !== deleteCartId)
+        this.reloadCart()
+      }
+      catch (error) {
+        console.log(`delete cart failed: ${error}`)
+      }
     },
 
     countPiece() {
@@ -131,7 +149,7 @@ export default {
     countPrice() {
       console.log(`in price`)
       for (let i = 0; i < this.cartInfo.length; i++) {
-        this.totalPrice += this.cartInfo[i].price *= this.quantity
+        this.totalPrice += this.cartInfo[i].totalPrice *= this.quantity
         this.click = true;
       }
     },

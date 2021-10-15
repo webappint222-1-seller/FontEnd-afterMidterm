@@ -2,7 +2,8 @@
   <div class="team">
     <Navbar/>
     <Member/>
-    
+
+
     <Footer></Footer>
     </div>
   
@@ -13,6 +14,7 @@
 import Navbar from '@/components/Navbar.vue'
 import Member from '@/components/Member.vue'
 import Footer from '@/components/Footer.vue'
+
 
 export default {
   name: 'Team',
@@ -26,6 +28,7 @@ export default {
     Navbar,
     Member,
     Footer
+   
   
   },
 }

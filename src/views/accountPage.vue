@@ -1,9 +1,9 @@
 <template>
-  <div class="home">
+  <div class="account">
     <Navbar />
     <v-container class="flex">
-      <v-flex xs12 sm12 md12 lg12 class="justify-center">
-        <v-btn dark v-show="!addedit" v-on:click="toggleDone()" class="mt-10">
+       <v-flex xs12 sm12 md12 lg12 class="justify-center">
+       <!-- <v-btn dark v-show="!addedit" v-on:click="toggleDone()" class="mt-10">
           <span>add / edit</span>
         </v-btn>
 
@@ -78,7 +78,7 @@
                       class="h-20 w-40 object-cover border-2 border-black rounded my-4 hidden"
                     />
                   </validation-provider>
-                  <!-- @change="uploadImage" -->
+                  @change="uploadImage"
                   <v-btn
                     class="mr-4"
                     @click.prevent="submitProductForm"
@@ -89,48 +89,39 @@
                 </form>
               </validation-observer>
             </v-card-text>
-          </v-card>
-        </div>
+          </v-card> 
+        </div> -->
       </v-flex>
     </v-container>
     <!-- ----------------------------------------------------------------------------------------------------------- -->
     <!-- Dummy -->
     <v-container class="flex mb-40">
       <v-layout row wrap>
-        <v-flex xs12 sm6 md6 lg3 wrap v-for="p in products" :key="p.title" class="justify-center">
+        <v-flex xs12 sm6 md6 lg2 wrap v-for="a in infoAccounts" :key="a.id" class="justify-center">
           <v-card dark flat class="pa-2 w-44 h-auto my-10">
-            <v-responsive>
+            <!-- <v-responsive>
               <img :src="p.pic" class="w-40 h-40" />
-            </v-responsive>
+            </v-responsive> -->
             <v-card-text class="justify-center text-xs break-words white--text">
               <ul>
-                <li>{{ p.title }}</li>
-                <li class="pt-2">{{ p.band }}</li>
-                <li class="pt-2">{{ p.price }}</li>
-                <li class="pt-2">{{ p.des }}</li>
+                <li>username: </li>
+                <li>{{ a.username }}</li>
+                <li class="pt-2">password: </li>
+                <li>{{ a.password }}</li>
+                <li class="pt-2">firstname: </li>
+                <li>{{ a.firstname }}</li>
+                <li class="pt-2">lastname: </li>
+                <li>{{ a.lastname }}</li>
+                <li class="pt-2">nickname: </li>
+                <li>{{ a.nickname }}</li>
+                <li class="pt-2">tel: </li>
+                <li>{{ a.tel }}</li>
               </ul>
             </v-card-text>
-
-            <!-- <v-card-text>
-              <validation-provider
-                v-slot="{ errors }"
-                name="Quantity"
-                rules="required|numeric|max_value:10"
-              >
-                <v-text-field
-                  v-model="quanForm"
-                  :error-messages="errors"
-                  label="Quantity"
-                  required
-                  outlined
-                  text-xs-left
-                  class="text-xs"
-                ></v-text-field>
-              </validation-provider>
-            </v-card-text>-->
+           
             <v-card-actions>
-              <v-btn @click="dummyProductInCart(p)" color="#FFB6C1">
-                <v-icon>shopping_cart</v-icon>
+              <v-btn @click="deleteAccount(a.id)" class= "" color="red darken-4" small>
+                <v-icon small>delete</v-icon>
               </v-btn>
             </v-card-actions>
           </v-card>
@@ -140,7 +131,7 @@
 
     <!---------------------------------------------------------------------------------------------------------------->
 
-    <v-container class="flex mb-40">
+    <!-- <v-container class="flex mb-40">
       <v-layout row wrap>
         <v-flex xs12 sm6 md6 lg3 wrap v-for="uta in productInfo" :key="uta.id" justify-center>
           <v-card dark flat class="pa-2 w-44 h-auto my-10">
@@ -157,19 +148,7 @@
             </v-card-text>
 
             <v-card-actions class="justify-center">
-              <!-- <li>
-                  <template>
-                    <vue-numeric-input
-                      placeholder="0"
-                      v-model="quantity"
-                      :min="1"
-                      :max="10"
-                      inline
-                      align="center"
-                      controls
-                    ></vue-numeric-input>
-                  </template>
-              </li>-->
+              
 
               <v-btn
                 @click.prevent="productInCart(uta)"
@@ -177,7 +156,7 @@
                 color="#FFB6C1"
                 small
               >
-                <!-- <v-btn color="black" small class= "" :disabled="disabledbtn"></v-btn> -->
+               
                 <v-icon small>shopping_cart</v-icon>
               </v-btn>
             </v-card-actions>
@@ -233,7 +212,7 @@
           </v-card>
         </v-flex>
       </v-layout>
-    </v-container>
+    </v-container> -->
     <Footer></Footer>
   </div>
 </template>
@@ -242,43 +221,43 @@
 
 import Navbar from '@/components/Navbar.vue'
 import Footer from '@/components/Footer.vue'
-import { required, max, max_value, numeric } from 'vee-validate/dist/rules'
-import { extend, ValidationObserver, ValidationProvider, setInteractionMode } from 'vee-validate'
+// import { required, max, max_value, numeric } from 'vee-validate/dist/rules'
+// import { extend, ValidationObserver, ValidationProvider, setInteractionMode } from 'vee-validate'
 // import VueNumericInput from 'vue-numeric-input'
 
-setInteractionMode('eager')
+// setInteractionMode('eager')
 
-extend('required', {
-  ...required,
-  message: '{_field_} can not be empty',
-})
+// extend('required', {
+//   ...required,
+//   message: '{_field_} can not be empty',
+// })
 
-extend('max', {
-  ...max,
-  message: '{_field_} may not be greater than {length} characters',
-})
+// extend('max', {
+//   ...max,
+//   message: '{_field_} may not be greater than {length} characters',
+// })
 
-extend('max_value', {
-  ...max_value,
-  message: '{_field_} may not be greater than 10 piece',
-})
+// extend('max_value', {
+//   ...max_value,
+//   message: '{_field_} may not be greater than 10 piece',
+// })
 
-extend('numeric', {
-  ...numeric,
-  message: '{_field_} must be number',
-})
+// extend('numeric', {
+//   ...numeric,
+//   message: '{_field_} must be number',
+// })
 
 export default {
-  name: 'Home',
-  props: [''],
+  name: 'acPage',
+//   props: [''],
   data() {
     return {
-      products: [
-        { title: "Sakaseya Sakase [Regular Edition]", band: "EGOIST", price: "1204yen", des: "Much anticipated new release featured as main theme to hit anime's theatrical release.", pic: "VVCL-1443.jpg", id: 1 },
-        { title: "Greatest Hits 2011-2017 Alter Ego [Regular Edition]", band: "EGOIST", price: "2778yen", des: "First greatest hits album of EGOIST featuring 15 titles (13 from anime series) in remastered edition.", pic: "VVCL-1155.jpg", id: 2 },
-        { title: "Kabaneri of the Iron Fortress [Regular Edition]", band: "EGOIST", price: "1204yen", des: "EGOIST brings the seventh single. The title song is an intro theme for the TV anime series Kabaneri of the Iron Fortress.", pic: "SRCL-9070.jpg", id: 3 },
-        { title: "RELOADED [Regular Edition]", band: "EGOIST", price: "1300yen", des: "New single release from Egoist is used as main theme for Project Itoh anime.", pic: "SRCL-8927.jpg", id: 4 },
-      ],
+    //   products: [
+    //     { title: "Sakaseya Sakase [Regular Edition]", band: "EGOIST", price: "1204yen", des: "Much anticipated new release featured as main theme to hit anime's theatrical release.", pic: "VVCL-1443.jpg", id: 1 },
+    //     { title: "Greatest Hits 2011-2017 Alter Ego [Regular Edition]", band: "EGOIST", price: "2778yen", des: "First greatest hits album of EGOIST featuring 15 titles (13 from anime series) in remastered edition.", pic: "VVCL-1155.jpg", id: 2 },
+    //     { title: "Kabaneri of the Iron Fortress [Regular Edition]", band: "EGOIST", price: "1204yen", des: "EGOIST brings the seventh single. The title song is an intro theme for the TV anime series Kabaneri of the Iron Fortress.", pic: "SRCL-9070.jpg", id: 3 },
+    //     { title: "RELOADED [Regular Edition]", band: "EGOIST", price: "1300yen", des: "New single release from Egoist is used as main theme for Project Itoh anime.", pic: "SRCL-8927.jpg", id: 4 },
+    //   ],
       addedit: false,
       cancel: false,
       nameForm: '',
@@ -292,6 +271,7 @@ export default {
       addCart: '',
       cartInfo: [],
       productInfo: [],
+      infoAccounts:[],
       inEditMode: false,
       addCartMode: false,
       editId: '',
@@ -302,6 +282,7 @@ export default {
       i: 'https://files.catbox.moe/vq3v5e.png',
       url: 'http://localhost:5001/productInfo',
       carturl: 'http://localhost:5002/cartInfo',
+      accounturl: 'http://localhost:5000/infoAccounts',
       // url: 'https://www.utastore.team:3006'
 
     }
@@ -311,8 +292,8 @@ export default {
   components: {
     Navbar,
     Footer,
-    ValidationProvider,
-    ValidationObserver,
+    // ValidationProvider,
+    // ValidationObserver,
     // VueNumericInput,
 
   },
@@ -322,14 +303,14 @@ export default {
   },
 
   methods: {
-    disabled() {
-      this.productInfo.name === this.cartInfo.name
-      this.disabledbtn = true;
-    },
+    // disabled() {
+    //   this.productInfo.name === this.cartInfo.name
+    //   this.disabledbtn = true;
+    // },
 
-    toggleDone() {
-      this.addedit = !this.addedit
-    },
+    // toggleDone() {
+    //   this.addedit = !this.addedit
+    // },
 
     clear() {
       this.$refs.observer.reset()
@@ -340,18 +321,18 @@ export default {
 
     },
 
-    uploadImage(p) {
-      const varFile = p.target.files[0]
-      //console.log(this.fileForm)
-      if (varFile.type.includes('image')) {
-        const readImage = new FileReader()
-        readImage.onload = (e) => {
-          this.i = e.target.result
-        }
-        this.fileForm = varFile
-        readImage.readAsDataURL(varFile)
-      }
-    },
+    // uploadImage(p) {
+    //   const varFile = p.target.files[0]
+    //   //console.log(this.fileForm)
+    //   if (varFile.type.includes('image')) {
+    //     const readImage = new FileReader()
+    //     readImage.onload = (e) => {
+    //       this.i = e.target.result
+    //     }
+    //     this.fileForm = varFile
+    //     readImage.readAsDataURL(varFile)
+    //   }
+    // },
 
     submitProductForm() {
       this.$refs.observer.validate()
@@ -563,58 +544,85 @@ export default {
 
 
     // GET
-    async getProductForm() {
-      try {
-        const res = await fetch(this.url)
-        const getdata = await res.json()
-        return getdata
-      }
-      catch (error) { console.log(`get product failed: ${error}`) }
-    },
+    // async getProductForm() {
+    //   try {
+    //     const res = await fetch(this.url)
+    //     const getdata = await res.json()
+    //     return getdata
+    //   }
+    //   catch (error) { console.log(`get product failed: ${error}`) }
+    // },
 
-    async getCartForm() {
+    // async getCartForm() {
+    //   try {
+    //     const res = await fetch(this.carturl)
+    //     const getcartdata = await res.json()
+    //     return getcartdata
+
+    //   }
+    //   catch (error) { console.log(`get cart failed: ${error}`) }
+    // },
+
+    async getAccount() {
       try {
-        const res = await fetch(this.carturl)
-        const getcartdata = await res.json()
-        return getcartdata
+        const res = await fetch(this.accounturl)
+        const getaccountdata = await res.json()
+        return getaccountdata
 
       }
-      catch (error) { console.log(`get cart failed: ${error}`) }
+      catch (error) { console.log(`get account failed: ${error}`) }
     },
 
     // DELETE
-    async deleteProduct(deleteId) {
+    // async deleteProduct(deleteId) {
+    //   try {
+    //     await fetch(`${this.url}/${deleteId}`, {
+    //       method: 'DELETE'
+    //     })
+    //     this.productInfo = this.productInfo.filter(uta => uta.id !== deleteId)
+    //     this.reloadProduct()
+    //   }
+    //   catch (error) {
+    //     console.log(`delete failed: ${error}`)
+    //   }
+    // },
+
+    // async deleteCart(deleteCartId) {
+    //   try {
+    //     await fetch(`${this.carturl}/${deleteCartId}`, {
+    //       method: 'DELETE'
+    //     })
+    //     this.cartInfo = this.cartInfo.filter(cInfo => cInfo.id !== deleteCartId)
+    //     this.reloadCart()
+    //   }
+    //   catch (error) {
+    //     console.log(`delete cart failed: ${error}`)
+    //   }
+    // },
+
+    async deleteAccount(deleteAccountId) {
       try {
-        await fetch(`${this.url}/${deleteId}`, {
+        await fetch(`${this.accounturl}/${deleteAccountId}`, {
           method: 'DELETE'
         })
-        this.productInfo = this.productInfo.filter(uta => uta.id !== deleteId)
-        this.reloadProduct()
+        this.infoAccounts = this.infoAccounts.filter(a => a.id !== deleteAccountId)
+        this.reloadAccount()
       }
       catch (error) {
-        console.log(`delete failed: ${error}`)
+        console.log(`delete account failed: ${error}`)
       }
     },
 
-    async deleteCart(deleteCartId) {
-      try {
-        await fetch(`${this.carturl}/${deleteCartId}`, {
-          method: 'DELETE'
-        })
-        this.cartInfo = this.cartInfo.filter(cInfo => cInfo.id !== deleteCartId)
-        this.reloadCart()
-      }
-      catch (error) {
-        console.log(`delete cart failed: ${error}`)
-      }
-    },
+    // async reloadProduct() {
+    //   this.productInfo = await this.getProductForm()
+    // },
 
-    async reloadProduct() {
-      this.productInfo = await this.getProductForm()
-    },
+    // async reloadCart() {
+    //   this.cartInfo = await this.getCartForm()
+    // },
 
-    async reloadCart() {
-      this.cartInfo = await this.getCartForm()
+    async reloadAccount() {
+      this.infoAccounts = await this.getAccount()
     },
 
     // EDIT
@@ -666,8 +674,9 @@ export default {
 
   // GET-2
   async created() {
-    this.productInfo = await this.getProductForm()
-    this.cartInfo = await this.getCartForm()
+    // this.productInfo = await this.getProductForm()
+    // this.cartInfo = await this.getCartForm()
+    this.infoAccounts = await this.getAccount()
 
   }
 
