@@ -49,12 +49,12 @@
                   <validation-provider
                     v-slot="{ errors }"
                     name="Product Description"
-                    rules="required|max:1000"
+                    rules="required|max:200"
                   >
                     <v-textarea
                       v-model="desForm"
                       :error-messages="errors"
-                      :counter="1000"
+                      :counter="200"
                       label="Producr Description"
                       required
                       single-line
@@ -142,7 +142,7 @@
 
     <v-container class="flex mb-40">
       <v-layout row wrap>
-        <v-flex xs12 sm6 md6 lg3 wrap v-for="uta in productInfo" :key="uta.id" justify-center>
+        <v-flex xs12 sm5 md6 lg3 wrap v-for="uta in productInfo" :key="uta.id" justify-center>
           <v-card dark flat class="pa-2 w-44 h-auto my-10">
             <v-responsive>
               <img :src="uta.file" class="w-40 h-40" />
@@ -196,20 +196,34 @@
 
       <v-layout column wrap mt-8>
         <v-flex xs12 sm12 md12 lg12 wrap class="justify-center hidden-xs-only">
-          <v-card flat class="pa-4 overflow-y-scroll" color="black" width="300" height="520">
+          <v-card flat class="pa-4 overflow-y-scroll" color="black" width="500" height="520">
             <span class="text-lg white--text">CART</span>
 
             <div v-for="cInfo in cartInfo" :key="cInfo.id">
-              <v-card dark flat class="w-auto h-auto my-5" color="#C0C0C0">
+              <v-card dark flat class="w-auto h-auto my-4 py-4" color="#C0C0C0">
                 <v-layout wrap>
-                  <v-card-text class="justify-start text-sm w-40 truncate white--text">
+                  <v-row class= "justify-center">
+                  <v-card-text class=" text-sm w-40 overflow-ellipsis black--text">
                     <span>{{ cInfo.name }}</span>
                   </v-card-text>
-                  <v-card-actions>
+                   <v-card-text class=" text-sm w-40 black--text">
+                     <ul class= "">
+                       <li>
+                        <span class= "">Quantity:</span>
+                       </li>
+                       <li class= "">
+                         <span class= "">{{ cInfo.quantity}}</span>
+                       </li>
+                     </ul>
+                    
+                  </v-card-text>
+
+                  <v-card-actions class= "">
                     <v-btn @click="deleteCart(cInfo.id)" color="red darken-4">
                       <v-icon>delete</v-icon>
                     </v-btn>
                   </v-card-actions>
+                  </v-row>
                 </v-layout>
               </v-card>
             </div>
@@ -355,11 +369,11 @@ export default {
 
     submitProductForm() {
       this.$refs.observer.validate()
-      this.nameErrors = this.nameForm === ''
-      this.bandErrors = this.bandForm === ''
-      this.priceErrors = this.priceForm === ''
-      this.desErrors = this.desForm === ''
-      this.fileErrors = this.fileForm === null
+      // this.nameErrors = this.nameForm === ''
+      // this.bandErrors = this.bandForm === ''
+      // this.priceErrors = this.priceForm === ''
+      // this.desErrors = this.desForm === ''
+      // this.fileErrors = this.fileForm === null
 
 
       console.log(`productName: ${this.nameForm}`)
@@ -368,7 +382,7 @@ export default {
       console.log(`productDes: ${this.desForm}`)
       console.log(`image: ${this.fileForm}`)
 
-      if (this.Formname !== '' &&
+      if (this.nameForm !== '' &&
         this.bandForm !== '' &&
         this.priceForm !== '' &&
         this.desForm !== '' &&
@@ -485,7 +499,7 @@ export default {
         band: this.bandForm,
         price: this.priceForm,
         des: this.desForm,
-        totalPrice: this.priceForm,
+        totalprice: this.priceForm,
         quantity: this.defaultQuantity
 
       })
@@ -509,7 +523,7 @@ export default {
               band: newProductToCart.band,
               price: newProductToCart.price,
               des: newProductToCart.des,
-              totalPrice: newProductToCart.totalPrice,
+              totalprice: newProductToCart.totalprice,
               quantity: newProductToCart.quantity
 
             })
@@ -521,10 +535,27 @@ export default {
           // res.fetchclose()
 
           this.cartInfo = [...this.cartInfo, data]
+
+          const Toast = this.$swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 2000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+              toast.addEventListener('mouseenter', this.$swal.stopTimer)
+              toast.addEventListener('mouseleave', this.$swal.resumeTimer)
+            }
+          })
+
+          Toast.fire({
+            icon: 'success',
+            title: 'add to cart successfully'
+          })
         }
         catch (error) { console.log(`add to cart failed: ${error}`), console.log(`${this.cartInfo[0].name}`) }
 
-      //***
+    
     },
     async editQuantity(newQuantity) {
       newQuantity.quantity++
@@ -540,7 +571,8 @@ export default {
             band: newQuantity.band,
             price: newQuantity.price,
             des: newQuantity.des,
-            quantity: newQuantity.quantity
+            quantity: newQuantity.quantity,
+            totalprice: newQuantity.price*newQuantity.quantity
           })
         })
         const data = await res.json()
@@ -552,7 +584,8 @@ export default {
             band: data.band,
             price: data.price,
             des: data.des,
-            quantity: data.quantity
+            quantity: data.quantity,
+            totalprice: data.totalprice
           } : cInfo
         )
       }
