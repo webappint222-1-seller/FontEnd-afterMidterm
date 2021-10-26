@@ -1,7 +1,7 @@
 <template>
   <div class="home">
     <Navbar />
-    <v-container class="flex justify-center">
+    <v-container class="flex justify-center pt-10">
       <v-card class="pa-4 text-white" dark >
         <register @register-user="confirmRegis" />
         <!-- <v-card>

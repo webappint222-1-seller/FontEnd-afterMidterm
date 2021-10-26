@@ -1,18 +1,19 @@
 <template>
   <div
-    class="login_form border-2 border-lightpink p-10 pt-5 shadow-sm mx-auto flex rounded"
+    class="login_form border-2 border-lightpink p-2 pt-5 shadow-sm mx-auto flex rounded"
     style="width: 500px;"
   >
     <div class="sec flex-1">
       <validation-observer ref="observer" v-slot="{ invalid }">
         <form @submit.prevent="register">
           <validation-provider v-slot="{ errors }" name="Email" rules="required|email">
-            <span class="flex shadow-md mt-5 mb-1 text-xs">
+            <span class="flex shadow-md mt-5 mb-1 text-xs justify-start">
               <span
-                class="bg-lightpink w-28 font-bold text-center text-black p-3 px-5 rounded-l"
+                class="bg-lightpink w-24 font-bold text-center text-black p-3 px-5 rounded-l"
               >Email</span>
 
               <input
+              
                 class="field text-sm text-black p-2 px-3 rounded-r w-full bg-white"
                 type="text"
                 placeholder="someonespecial@example.com"
@@ -28,7 +29,7 @@
           <validation-provider v-slot="{ errors }" name="Password" rules="required">
             <span class="flex shadow-md mt-5 mb-1 text-xs">
               <span
-                class="bg-lightpink w-28 font-bold text-center text-black p-3 px-5 rounded-l"
+                class="bg-lightpink w-24 font-bold text-center text-black p-3 px-3 rounded-l"
               >Password</span>
               <input
                 class="field text-sm text-black p-2 px-3 rounded-r w-full bg-white"
@@ -45,7 +46,7 @@
           <validation-provider v-slot="{ errors }" name="Name" rules="required|alpha">
             <span class="flex shadow-md mt-5 mb-1 text-xs">
               <span
-                class="bg-lightpink w-28 font-bold text-center text-black p-3 px-5 rounded-l"
+                class="bg-lightpink w-24 font-bold text-center text-black p-3 px-5 rounded-l"
               >Name</span>
               <input
                 class="field text-sm text-black p-2 px-3 rounded-r w-full bg-white"
@@ -62,7 +63,7 @@
           <validation-provider v-slot="{ errors }" name="Phone" rules="required|numeric">
             <span class="flex shadow-md mt-5 mb-1 text-xs">
               <span
-                class="bg-lightpink w-28 font-bold text-center text-black p-3 px-5 rounded-l"
+                class="bg-lightpink w-24 font-bold text-center text-black p-3 px-5 rounded-l"
               >Phone</span>
               <input
                 class="field text-sm text-black p-2 px-3 rounded-r w-full bg-white"
@@ -79,7 +80,7 @@
           <validation-provider v-slot="{ errors }" name="Date" rules="required">
             <span class="flex shadow-md mt-5 mb-1 text-xs">
               <span
-                class="bg-lightpink w-28 font-bold text-center text-black p-3 px-5 rounded-l"
+                class="bg-lightpink w-24 font-bold text-center text-black p-3 px-5 rounded-l"
               >Date of Birth</span>
               <input
                 class="field text-sm text-black p-2 px-3 rounded-r w-full bg-white"
@@ -96,7 +97,7 @@
           <validation-provider v-slot="{ errors }" name="Address" rules="required">
             <span class="flex shadow-md mt-5 mb-1 text-xs">
               <span
-                class="bg-lightpink w-28 font-bold text-center text-black p-3 px-5 rounded-l"
+                class="bg-lightpink w-24 font-bold text-center text-black p-3 px-5 rounded-l"
               >Address</span>
               <input
                 class="field text-sm text-black p-2 px-3 rounded-r w-full bg-white"

@@ -1,8 +1,8 @@
 <template>
   <div class="account">
     <Navbar />
-    <v-container class="flex">
-      <v-flex xs12 sm12 md12 lg12 class="justify-center">
+    <v-container class="flex justify-center w-auto h-auto">
+      <v-flex xs10 sm10 md8 lg9 class="pa-2 justify-center">
         <!-- <v-btn dark v-show="!addedit" v-on:click="toggleDone()" class="mt-10">
           <span>add / edit</span>
         </v-btn>-->
@@ -13,141 +13,155 @@
         </v-btn>-->
 
         <!-- </div> -->
+
+        <!-- ----------------------------------------------------------------------------------------------------------- -->
+        <!-- Dummy -->
+        <v-container class="flex mb-40">
+          <v-layout row warp>
+            <v-row class="justify-center">
+              <v-card dark flat height="520" width="auto" class="overflow-y-scroll pa-4 mt-10">
+                <span class="text-lg white--text ml-8">ACCOUNT</span>
+
+                <v-layout warp>
+                  <v-row class= "justify-center">
+                    <div v-for="a in infoAccounts" :key="a.id">
+                      <v-card
+                        flat
+                        height="auto"
+                        width="180"
+                        class="my-10 mx-4 pa-2"
+                        color="#C0C0C0"
+                      >
+                        <v-card-text class="justify-center text-sm black--text">
+                          <ul>
+                            <li>Email:</li>
+                            <li>{{ a.email }}</li>
+                            <li class="pt-2">Password:</li>
+                            <li>{{ a.password }}</li>
+                            <li class="pt-2">Name:</li>
+                            <li>{{ a.name }}</li>
+                            <li class="pt-2">Phone:</li>
+                            <li>{{ a.phone }}</li>
+                            <li class="pt-2">Date of Birth:</li>
+                            <li>{{ a.date }}</li>
+                            <li class="pt-2">Address:</li>
+                            <li>{{ a.address }}</li>
+                          </ul>
+                        </v-card-text>
+
+                        <v-card-actions class="justify-center">
+                          <v-btn @click="showAccount(a)" color="yellow darken-4" small>
+                            <v-icon small>edit</v-icon>
+                          </v-btn>
+                          <v-btn @click="deleteAccount(a.id)" class color="red darken-4" small>
+                            <v-icon small>delete</v-icon>
+                          </v-btn>
+                        </v-card-actions>
+                      </v-card>
+                    </div>
+                  </v-row>
+                </v-layout>
+              </v-card>
+            </v-row>
+
+            <v-flex xs12 sm12 md12 lg12 class="pa-2 justify-center">
+              <v-card color="black" class="mt-10 text-black">
+                <v-card color="#C0C0C0" class="w-auto h-auto ma-4">
+                  <v-card-text>
+                    <validation-observer ref="observer" v-slot="{ invalid }">
+                      <form>
+                        <validation-provider v-slot="{ errors }" name="Email" rules="required">
+                          <v-text-field
+                            v-model="editEmailForm"
+                            :error-messages="errors"
+                            label="Email"
+                            required
+                            single-line
+                            color="black"
+                          ></v-text-field>
+                        </validation-provider>
+
+                        <validation-provider v-slot="{ errors }" name="Password" rules="required">
+                          <v-text-field
+                            v-model="editPasswordForm"
+                            :error-messages="errors"
+                            label="Password"
+                            required
+                            single-line
+                            color="black"
+                          ></v-text-field>
+                        </validation-provider>
+
+                        <validation-provider v-slot="{ errors }" name="Name" rules="required">
+                          <v-text-field
+                            v-model="editNameForm"
+                            :error-messages="errors"
+                            label="Name"
+                            required
+                            single-line
+                            color="black"
+                          ></v-text-field>
+                        </validation-provider>
+
+                        <validation-provider
+                          v-slot="{ errors }"
+                          name="Phone"
+                          rules="required|numeric"
+                        >
+                          <v-text-field
+                            v-model="editPhoneForm"
+                            :error-messages="errors"
+                            label="Phone"
+                            required
+                            single-line
+                            color="black"
+                          ></v-text-field>
+                        </validation-provider>
+
+                        <validation-provider v-slot="{ errors }" name="Date" rules="required">
+                          <v-text-field
+                            v-model="editDateForm"
+                            :error-messages="errors"
+                            label="Date"
+                            required
+                            single-line
+                            type="date"
+                            color="black"
+                          ></v-text-field>
+                        </validation-provider>
+
+                        <validation-provider
+                          v-slot="{ errors }"
+                          name="Address"
+                          rules="required|max:200"
+                        >
+                          <v-text-field
+                            v-model="editAddressForm"
+                            :error-messages="errors"
+                            label="Address"
+                            required
+                            single-line
+                            color="black"
+                          ></v-text-field>
+                        </validation-provider>
+
+                        <v-btn
+                          class="mr-4"
+                          @click.prevent="submitAccountForm"
+                          type="submit"
+                          :disabled="invalid"
+                        >Submit</v-btn>
+                        <v-btn @click="clear">Clear</v-btn>
+                      </form>
+                    </validation-observer>
+                  </v-card-text>
+                </v-card>
+              </v-card>
+            </v-flex>
+          </v-layout>
+        </v-container>
       </v-flex>
     </v-container>
-    <!-- ----------------------------------------------------------------------------------------------------------- -->
-    <!-- Dummy -->
-    <v-container class="flex mb-40">
-      <v-layout row warp>
-        <v-row xs12 sm6 md6 lg12 class="justify-center">
-          <v-card dark flat height="520" width="1090" class="overflow-y-scroll pa-4 mt-10">
-            <span class="text-lg white--text ml-8">ACCOUNT</span>
-
-            <v-layout row warp>
-              <div v-for="a in infoAccounts" :key="a.id">
-                <v-card flat height="auto" width="180" class="my-10 mx-4 pa-2" color="#C0C0C0">
-                  <v-card-text class="justify-center text-sm black--text">
-                    <ul>
-                      <li>Email:</li>
-                      <li>{{ a.email }}</li>
-                      <li class="pt-2">Password:</li>
-                      <li>{{ a.password }}</li>
-                      <li class="pt-2">Name:</li>
-                      <li>{{ a.name }}</li>
-                      <li class="pt-2">Phone:</li>
-                      <li>{{ a.phone }}</li>
-                      <li class="pt-2">Date of Birth:</li>
-                      <li>{{ a.date }}</li>
-                      <li class="pt-2">Address:</li>
-                      <li>{{ a.address }}</li>
-                    </ul>
-                  </v-card-text>
-
-                  <v-card-actions class="justify-center">
-                    <v-btn @click="showAccount(a)" color="yellow darken-4" small>
-                      <v-icon small>edit</v-icon>
-                    </v-btn>
-                    <v-btn @click="deleteAccount(a.id)" class color="red darken-4" small>
-                      <v-icon small>delete</v-icon>
-                    </v-btn>
-                  </v-card-actions>
-                </v-card>
-              </div>
-            </v-layout>
-          </v-card>
-
-          <v-card color="black" class="mt-10 ml-10 text-black">
-            <v-card color="#C0C0C0" class="w-80 h-auto ma-4">
-              <v-card-text>
-                <validation-observer ref="observer" v-slot="{ invalid }">
-                  <form>
-                    <validation-provider v-slot="{ errors }" name="Email" rules="required">
-                      <v-text-field
-                        v-model="editEmailForm"
-                        :error-messages="errors"
-                        label="Email"
-                        required
-                        single-line
-                        color="black"
-                      ></v-text-field>
-                    </validation-provider>
-
-                    <validation-provider v-slot="{ errors }" name="Password" rules="required">
-                      <v-text-field
-                        v-model="editPasswordForm"
-                        :error-messages="errors"
-                        label="Password"
-                        required
-                        single-line
-                        color="black"
-                      ></v-text-field>
-                    </validation-provider>
-
-                    <validation-provider v-slot="{ errors }" name="Name" rules="required">
-                      <v-text-field
-                        v-model="editNameForm"
-                        :error-messages="errors"
-                        label="Name"
-                        required
-                        single-line
-                        color="black"
-                      ></v-text-field>
-                    </validation-provider>
-
-                    <validation-provider v-slot="{ errors }" name="Phone" rules="required|numeric">
-                      <v-text-field
-                        v-model="editPhoneForm"
-                        :error-messages="errors"
-                        label="Phone"
-                        required
-                        single-line
-                        color="black"
-                      ></v-text-field>
-                    </validation-provider>
-
-                    <validation-provider v-slot="{ errors }" name="Date" rules="required">
-                      <v-text-field
-                        v-model="editDateForm"
-                        :error-messages="errors"
-                        label="Date"
-                        required
-                        single-line
-                        type="date"
-                        color="black"
-                      ></v-text-field>
-                    </validation-provider>
-
-                    <validation-provider
-                      v-slot="{ errors }"
-                      name="Address"
-                      rules="required|max:200"
-                    >
-                      <v-text-field
-                        v-model="editAddressForm"
-                        :error-messages="errors"
-                        label="Address"
-                        required
-                        single-line
-                        color="black"
-                      ></v-text-field>
-                    </validation-provider>
-
-                    <v-btn
-                      class="mr-4"
-                      @click.prevent="submitAccountForm"
-                      type="submit"
-                      :disabled="invalid"
-                    >Submit</v-btn>
-                    <v-btn @click="clear">Clear</v-btn>
-                  </form>
-                </validation-observer>
-              </v-card-text>
-            </v-card>
-          </v-card>
-        </v-row>
-      </v-layout>
-    </v-container>
-
     <!---------------------------------------------------------------------------------------------------------------->
 
     <!-- <v-container class="flex mb-40">
@@ -387,7 +401,7 @@ export default {
             name: this.editNameForm,
             phone: this.editPhoneForm,
             date: this.editDateForm,
-            address:this.editAddressForm,
+            address: this.editAddressForm,
           })
         }
         else {
@@ -397,12 +411,12 @@ export default {
             name: this.editNameForm,
             phone: this.editPhoneForm,
             date: this.editDateForm,
-            address:this.editAddressForm,
+            address: this.editAddressForm,
           })
         }
 
       }
-        this.editEmailForm = '',
+      this.editEmailForm = '',
         this.editPasswordForm = '',
         this.editNameForm = '',
         this.editPhoneForm = '',
@@ -437,7 +451,7 @@ export default {
       }
       catch (error) { console.log(`save failed: ${error}`) }
     },
-    
+
     // productInCart(accountInfo) {
     //   this.editId = accountInfo.id
     //   this.nameForm = accountInfo.name
@@ -586,7 +600,7 @@ export default {
             name: newAccountInfo.name,
             phone: newAccountInfo.phone,
             date: newAccountInfo.date,
-            address: newAccountInfo.address            
+            address: newAccountInfo.address
           })
         })
         const data = await res.json()

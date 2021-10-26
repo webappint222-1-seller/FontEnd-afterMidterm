@@ -1,7 +1,7 @@
 <template>
   <div class="home">
     <Navbar />
-    <v-container class="flex">
+    <v-container class="flex w-full h-full">
       <v-flex xs12 sm12 md12 lg12 class="justify-center">
         <v-btn dark v-show="!addedit" v-on:click="toggleDone()" class="mt-10">
           <span>add / edit</span>

@@ -1,7 +1,7 @@
 <template>
   <div class="home">
     <Navbar />
-    <v-container class="flex justify-center">
+    <v-container class="flex justify-center pt-10">
       <v-card class="pa-4 text-white" dark>
         <login @login-user="confirmLogin" />
       </v-card>
@@ -98,7 +98,7 @@ export default {
             toast: true,
             position: 'top-end',
             showConfirmButton: false,
-            timer: 3000,
+            timer: 2000,
             timerProgressBar: true,
             didOpen: (toast) => {
               toast.addEventListener('mouseenter', this.$swal.stopTimer)

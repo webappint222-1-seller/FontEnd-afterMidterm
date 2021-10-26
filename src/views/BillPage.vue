@@ -53,17 +53,10 @@
               </v-card>
             </div>
 
-            
             <v-card-text class="text-sm truncate white--text">
               <ul justify-center>
                 <li class="mb-4 ml-20">
-                  <v-btn
-                    v-on:click="confirmCart()"
-                    
-                    
-                    class="mr-12"
-                    color="#FFB6C1"
-                  >
+                  <v-btn v-on:click="confirmCart()" class="mr-12" color="#FFB6C1">
                     <v-icon>checklist</v-icon>
                   </v-btn>
                 </li>
@@ -79,9 +72,7 @@
           </v-card>
         </v-flex>
 
-        
         <v-flex xs12 sm12 md12 lg12 class="justify-center">
-          
           <v-btn no-gutter dark @click="$router.push('/')" class="mt-10">
             <v-icon left>reply</v-icon>
             <span>BACK TO HOME</span>
@@ -89,10 +80,8 @@
         </v-flex>
       </v-layout>
     </v-container>
-  <Footer/>
+    <Footer />
   </div>
-
-
 </template>
 
 <script>
@@ -149,18 +138,18 @@ export default {
 
     },
 
-    async deleteAfterCart() {     
-      for (let i = 0; i < this.cartInfo.length; i++) {  
-        
-      try {        
-        await fetch(`${this.carturl}/${this.cartInfo[i].id}`, {
-          method: 'DELETE'
-        })
+    async deleteAfterCart() {
+      for (let i = 0; i < this.cartInfo.length; i++) {
 
-      }
-      catch (error) {
-        console.log(`delete cart after failed: ${error}`)
-      }
+        try {
+          await fetch(`${this.carturl}/${this.cartInfo[i].id}`, {
+            method: 'DELETE'
+          })
+
+        }
+        catch (error) {
+          console.log(`delete cart after failed: ${error}`)
+        }
       }
     },
 
@@ -236,16 +225,16 @@ export default {
         confirmButtonText: 'Confirm'
       }).then((result) => {
         if (result.isConfirmed) {
-               this.$swal.fire(
-              'success!',
-              'Your purchase has been success.',
-              'success'
-               )               
-               this.deleteAfterCart()
-              
-            
-          }
-        
+          this.$swal.fire(
+            'success!',
+            'Your purchase has been success.',
+            'success'
+          )
+          this.deleteAfterCart()
+
+
+        }
+
       })
 
     },

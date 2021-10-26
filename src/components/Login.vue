@@ -1,5 +1,5 @@
 <template>
-    <div class="login_form border-2 border-lightpink p-10 pt-5 shadow-sm mx-auto flex rounded" style="width: 500px;">
+    <div class="login_form border-2 border-lightpink p-2 pt-5 shadow-sm mx-auto flex rounded" style="width: 500px;">
         <div class="sec flex-1">
             <form @submit.prevent="login">
             <span class="flex shadow-md mb-5 text-xs">
