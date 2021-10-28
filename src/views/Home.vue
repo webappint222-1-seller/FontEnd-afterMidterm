@@ -1,7 +1,7 @@
 <template>
   <div class="home">
     <Navbar />
-    <v-container class="flex w-full h-full">
+    <v-container class="flex">
       <v-flex xs12 sm12 md12 lg12 class="justify-center">
         <v-btn dark v-show="!addedit" v-on:click="toggleDone()" class="mt-10">
           <span>add / edit</span>
@@ -444,6 +444,23 @@ export default {
         })
         const data = await res.json()
         this.productInfo = [...this.productInfo, data]
+
+        const Toast = this.$swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 2000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+              toast.addEventListener('mouseenter', this.$swal.stopTimer)
+              toast.addEventListener('mouseleave', this.$swal.resumeTimer)
+            }
+          })
+
+          Toast.fire({
+            icon: 'success',
+            title: 'Add new product successfully'
+          })
       }
       catch (error) { console.log(`save failed: ${error}`) }
     },
@@ -550,7 +567,7 @@ export default {
 
           Toast.fire({
             icon: 'success',
-            title: 'add to cart successfully'
+            title: 'Add to cart successfully'
           })
         }
         catch (error) { console.log(`add to cart failed: ${error}`), console.log(`${this.cartInfo[0].name}`) }
@@ -690,6 +707,23 @@ export default {
         this.bandform = ''
         this.priceForm = ''
         this.desForm = ''
+
+        const Toast = this.$swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 2000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+              toast.addEventListener('mouseenter', this.$swal.stopTimer)
+              toast.addEventListener('mouseleave', this.$swal.resumeTimer)
+            }
+          })
+
+          Toast.fire({
+            icon: 'success',
+            title: 'Edit product successfully'
+          })
       }
       catch (error) {
         console.log(`edit failed: ${error}`)

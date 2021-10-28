@@ -19,11 +19,20 @@
 
         <v-tooltip bottom>
           <template v-slot:activator="{ on, attrs }">
+            <v-btn depressed @click="$router.push('/accountpage')" v-bind="attrs" v-on="on">
+              <v-icon left>manage_accounts</v-icon>
+            </v-btn>
+          </template>
+          <span>Manage Account</span>
+        </v-tooltip>
+
+        <v-tooltip bottom>
+          <template v-slot:activator="{ on, attrs }">
             <v-btn depressed @click="$router.push('/registerpage')" v-bind="attrs" v-on="on">
               <v-icon left>account_circle</v-icon>
             </v-btn>
           </template>
-          <span>create account</span>
+          <span>Create Account</span>
         </v-tooltip>
 
         <v-tooltip bottom>
