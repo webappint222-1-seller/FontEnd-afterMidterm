@@ -3,7 +3,7 @@
     <Navbar />
     <v-container class="flex justify-center pt-10">
       <v-card class="pa-4 text-white" dark>
-        <login @login-user="confirmLogin" />
+        <login @login-user="login" />
       </v-card>
     </v-container>
   </div>
@@ -15,11 +15,13 @@ import Login from "@/components/Login.vue";
 
 
 export default {
-  name: "Home",
+  emits: ['login-data'],
+  name: "LoginPage",
   data() {
     return {
-      url: " http://localhost:5000/infoAccounts",
-      infoAccounts: [],
+      // url: " http://localhost:5000/infoAccounts",
+      url: 'http://localhost:3006',
+      userList: [],
     };
   },
   components: {
@@ -64,79 +66,155 @@ export default {
 
 
 
-    confirmLogin(EmailPassword) {
-      console.log(`email: ${EmailPassword.email}`)
+    // confirmLogin(EmailPassword) {
+    //   console.log(`email: ${typeof EmailPassword.email} ${EmailPassword.email}`)
+    //   console.log(`pass: ${typeof EmailPassword.password} ${EmailPassword.password}`)
+    //   console.log(`userList: ${Array.isArray(this.userList)} ${this.userList[0].emailaddress}`)
 
-      // this.$swal.fire({
-      // title: 'Are you sure?',
-      // text: "You won't be able to revert this!",
-      // icon: 'warning',
-      // showCancelButton: true,
-      // confirmButtonColor: '#3085d6',
-      // cancelButtonColor: '#d33',
-      // confirmButtonText: 'Confirm'
-      // }).then((result) => {
-      // if (result.isConfirmed) {
-      this.infoAccounts = this.infoAccounts.filter(
-        (info) =>
-          info.email == EmailPassword.email &&
-          info.password == EmailPassword.password
-      );
-      if (this.infoAccounts.length !== 0) {
-        if (
-          this.infoAccounts[0].email == EmailPassword.email &&
-          this.infoAccounts[0].password == EmailPassword.password
-        ) {
+    //   // this.$swal.fire({
+    //   // title: 'Are you sure?',
+    //   // text: "You won't be able to revert this!",
+    //   // icon: 'warning',
+    //   // showCancelButton: true,
+    //   // confirmButtonColor: '#3085d6',
+    //   // cancelButtonColor: '#d33',
+    //   // confirmButtonText: 'Confirm'
+    //   // }).then((result) => {
+    //   // if (result.isConfirmed) {
+    //   this.userList = this.userList.filter(
+    //     (info) =>
+    //       info.emailaddress == EmailPassword.email &&
+    //       info.password == EmailPassword.password
+    //   );
+    //   console.log(`email2: ${typeof EmailPassword.email} ${EmailPassword.email}`)
+    //   console.log(`pass2: ${typeof EmailPassword.password} ${EmailPassword.password}`)
 
-          // this.$swal.fire({
-          // title: 'Login success!',
-          // text: 'Your has been login.',
-          // icon: 'success'
+    //   if (this.userList.length !== 0) {
+    //     console.log(`email2: ${EmailPassword.emailaddress}`)
+    //     console.log(`userList: ${Array.isArray(this.userList)} ${this.userList}`)
+    //     if (
+    //       this.userList[0].emailaddress == EmailPassword.email &&
+    //       this.userList[0].password == EmailPassword.password
+    //     ) {
+
+    //       // this.$swal.fire({
+    //       // title: 'Login success!',
+    //       // text: 'Your has been login.',
+    //       // icon: 'success'
+    //       // })
+
+    //       const Toast = this.$swal.mixin({
+    //         toast: true,
+    //         position: 'top-end',
+    //         showConfirmButton: false,
+    //         timer: 2000,
+    //         timerProgressBar: true,
+    //         didOpen: (toast) => {
+    //           toast.addEventListener('mouseenter', this.$swal.stopTimer)
+    //           toast.addEventListener('mouseleave', this.$swal.resumeTimer)
+    //         }
+    //       })
+
+    //       Toast.fire({
+    //         icon: 'success',
+    //         title: 'Login is successfully'
+    //       })
+
+    //       // const dataLogin = {
+    //       //     dataEmail: this.userList.emailaddress  
+    //       // }
+
+    //       // this.$encodeURIComponent('login-data', dataLogin)
+    //       this.$router.push('/');
+
+
+    //     }
+    //   } else {
+    //     this.$swal.fire({
+    //       // title: '<span class= "text-white"> Login failed! </span>',            
+    //       // text: '<span class= "text-white"> Your email or password wrong please try again. </span>',              
+    //       title: 'Login failed!',
+    //       text: 'Your email or password wrong please try again.',
+    //       icon: 'error',
+    //       footer: '<a href="/registerpage" class= "font-bold text-lightpink"> Need to register? </a>',
+    //       // background: 'black'            
+    //     })
+    //   }
+
+
+
+    // },
+
+    // async getUser() {
+    //   try {
+    //     const res = await fetch(this.url + "/customers")
+    //     const resuserdata = await res.json()
+    //     return resuserdata
+    //   }
+    //   catch (error) {
+    //     console.log(`getuser False!!! ${error}`)
+    //     console.log(`userList: ${Array.isArray(this.userList)} ${this.userList}`)
+    //   }
+
+    // },
+
+
+    async login(emailPasword) {
+
+      const formData = new FormData()
+      formData.append('emailaddress', emailPasword.email)
+      formData.append('password', emailPasword.password)
+
+      try {
+        await fetch(this.url + "/login", {
+          method: 'POST',
+          // headers: {
+          //   'content-type': 'application/json'
+          // },
+          // body: JSON.stringify({
+          //   product_name: this.nameForm,
+          //   band_name: this.bandForm,         
           // })
 
-          const Toast = this.$swal.mixin({
-            toast: true,
-            position: 'top-end',
-            showConfirmButton: false,
-            timer: 2000,
-            timerProgressBar: true,
-            didOpen: (toast) => {
-              toast.addEventListener('mouseenter', this.$swal.stopTimer)
-              toast.addEventListener('mouseleave', this.$swal.resumeTimer)
-            }
-          })
+          credentials: 'include',
+          body: formData
 
-          Toast.fire({
-            icon: 'success',
-            title: 'Login is successfully'
-          })
-          this.$router.push('/');
+        })      
 
+        // this.$cookie.set('token', res.data.token);
+        // const data = await res.json()
+        // this.productInfo = [...this.productInfo, data]
 
-          // location.reload();
-        }
-      } else {
-        this.$swal.fire({
-          // title: '<span class= "text-white"> Login failed! </span>',            
-          // text: '<span class= "text-white"> Your email or password wrong please try again. </span>',              
-          title: 'Login failed!',
-          text: 'Your email or password wrong please try again.',
-          icon: 'error',
-          footer: '<a href="/registerpage" class= "font-bold text-lightpink"> Need to register? </a>',
-          // background: 'black'            
-
-
+        const Toast = this.$swal.mixin({
+          toast: true,
+          position: 'top-end',
+          showConfirmButton: false,
+          timer: 2000,
+          timerProgressBar: true,
+          didOpen: (toast) => {
+            toast.addEventListener('mouseenter', this.$swal.stopTimer)
+            toast.addEventListener('mouseleave', this.$swal.resumeTimer)
+          }
         })
 
+        Toast.fire({
+          icon: 'success',
+          title: 'Login is successfully'
+        })
+        this.$router.push('/');        
+
       }
-      // }
-      // })
+      catch (error) { console.log(`login: ${error}`) }
+      console.log(`email2: ${emailPasword.email}`)
+      console.log(`password2: ${emailPasword.password}`)
 
     },
+
 
   },
   async created() {
     this.infoAccounts = await this.fetchEmailPassword();
+    // this.userList = await this.getUser();
   },
 };
 </script>

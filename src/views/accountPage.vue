@@ -23,28 +23,22 @@
                 <span class="text-lg white--text ml-8">ACCOUNT</span>
 
                 <v-layout warp>
-                  <v-row class= "justify-center">
+                  <v-row class="justify-center">
                     <div v-for="a in infoAccounts" :key="a.id">
-                      <v-card
-                        flat
-                        height="auto"
-                        width="180"
-                        class="my-10 mx-4 pa-2"
-                        color="#C0C0C0"
-                      >
+                      <v-card flat height="auto" width="180" class="my-10 mx-4" color="#C0C0C0">
                         <v-card-text class="justify-center text-sm black--text">
                           <ul>
-                            <li>Email:</li>
-                            <li>{{ a.email }}</li>
-                            <li class="pt-2">Password:</li>
+                            <li class="font-bold">Email:</li>
+                            <li>{{ a.emailaddress }}</li>
+                            <li class="pt-2 font-bold">Password:</li>
                             <li>{{ a.password }}</li>
-                            <li class="pt-2">Name:</li>
+                            <li class="pt-2 font-bold">Name:</li>
                             <li>{{ a.name }}</li>
-                            <li class="pt-2">Phone:</li>
-                            <li>{{ a.phone }}</li>
-                            <li class="pt-2">Date of Birth:</li>
-                            <li>{{ a.date }}</li>
-                            <li class="pt-2">Address:</li>
+                            <li class="pt-2 font-bold">Phone:</li>
+                            <li>{{ a.phonenumber }}</li>
+                            <li class="pt-2 font-bold">Date of Birth:</li>
+                            <li>{{ a.DOB }}</li>
+                            <li class="pt-2 font-bold">Address:</li>
                             <li>{{ a.address }}</li>
                           </ul>
                         </v-card-text>
@@ -53,7 +47,7 @@
                           <v-btn @click="showAccount(a)" color="yellow darken-4" small>
                             <v-icon small>edit</v-icon>
                           </v-btn>
-                          <v-btn @click="deleteAccount(a.id)" class color="red darken-4" small>
+                          <v-btn @click="deleteAccount(a.user_id)" class color="red darken-4" small>
                             <v-icon small>delete</v-icon>
                           </v-btn>
                         </v-card-actions>
@@ -252,6 +246,8 @@
 
 <script>
 
+
+
 import Navbar from '@/components/Navbar.vue'
 import Footer from '@/components/Footer.vue'
 import { required, max, max_value, numeric } from 'vee-validate/dist/rules'
@@ -285,12 +281,6 @@ export default {
   //   props: [''],
   data() {
     return {
-      //   products: [
-      //     { title: "Sakaseya Sakase [Regular Edition]", band: "EGOIST", price: "1204yen", des: "Much anticipated new release featured as main theme to hit anime's theatrical release.", pic: "VVCL-1443.jpg", id: 1 },
-      //     { title: "Greatest Hits 2011-2017 Alter Ego [Regular Edition]", band: "EGOIST", price: "2778yen", des: "First greatest hits album of EGOIST featuring 15 titles (13 from anime series) in remastered edition.", pic: "VVCL-1155.jpg", id: 2 },
-      //     { title: "Kabaneri of the Iron Fortress [Regular Edition]", band: "EGOIST", price: "1204yen", des: "EGOIST brings the seventh single. The title song is an intro theme for the TV anime series Kabaneri of the Iron Fortress.", pic: "SRCL-9070.jpg", id: 3 },
-      //     { title: "RELOADED [Regular Edition]", band: "EGOIST", price: "1300yen", des: "New single release from Egoist is used as main theme for Project Itoh anime.", pic: "SRCL-8927.jpg", id: 4 },
-      //   ],
       addedit: false,
       cancel: false,
       editEmailForm: '',
@@ -314,10 +304,12 @@ export default {
       cart: '',
 
       i: 'https://files.catbox.moe/vq3v5e.png',
-      url: 'http://localhost:5001/productInfo',
-      carturl: 'http://localhost:5002/cartInfo',
-      accounturl: 'http://localhost:5000/infoAccounts',
-      // url: 'https://www.utastore.team:3006'
+      // url: 'http://localhost:5001/productInfo',
+      // carturl: 'http://localhost:5002/cartInfo',
+      // accounturl: 'http://localhost:5000/infoAccounts',
+      // url: 'https://www.utastore.team:3006',
+      url: 'http://localhost:3006',
+      userList: [],
 
     }
 
@@ -337,6 +329,8 @@ export default {
   },
 
   methods: {
+
+
     // disabled() {
     //   this.productInfo.name === this.cartInfo.name
     //   this.disabledbtn = true;
@@ -547,7 +541,7 @@ export default {
 
     async getAccount() {
       try {
-        const res = await fetch(this.accounturl)
+        const res = await fetch(this.url + "/customers")
         const getaccountdata = await res.json()
         return getaccountdata
 
@@ -559,10 +553,10 @@ export default {
 
     async deleteAccount(deleteAccountId) {
       try {
-        await fetch(`${this.accounturl}/${deleteAccountId}`, {
+        await fetch(`${this.url}/customers/${deleteAccountId}`, {
           method: 'DELETE'
         })
-        this.infoAccounts = this.infoAccounts.filter(a => a.id !== deleteAccountId)
+        // this.infoAccounts = this.infoAccounts.filter(a => a.id !== deleteAccountId)
         this.reloadAccount()
       }
       catch (error) {
@@ -639,4 +633,7 @@ export default {
   }
 
 }
+// const d = new Date(this.a.DOB);
+//     let text = d.toString();
+//      console.log(`text: ${text}`)
 </script>

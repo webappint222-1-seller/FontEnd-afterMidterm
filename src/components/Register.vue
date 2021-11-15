@@ -43,7 +43,7 @@
             <span class="text-red-500 bg-opacity-80 font-medium rounded-sm">{{ errors[0] }}</span>
           </validation-provider>
 
-          <validation-provider v-slot="{ errors }" name="Name" rules="required|alpha">
+          <validation-provider v-slot="{ errors }" name="Name" rules="required|alpha_spaces">
             <span class="flex shadow-md mt-5 mb-1 text-xs">
               <span
                 class="bg-lightpink w-24 font-bold text-center text-black p-3 px-5 rounded-l"
@@ -179,22 +179,36 @@ export default {
 
   methods: {
     register() {
-
+      
       const userRegister = {
-        email: this.enteredEmail,
+        emailaddress: this.enteredEmail,
         password: this.enteredPassword,
         name: this.enteredName,
-        phone: this.enteredPhone,
-        date: this.enteredDate,
+        phonenumber: this.enteredPhone,
+        dob: this.enteredDate,
         address: this.enteredAddress,
       }
+
+      // console.log(`email: ${typeof this.emailaddress} ${this.emailaddress}`)
+      // console.log(`pass: ${typeof this.password} ${this.password}`)
+      // console.log(`name: ${typeof this.name} ${this.name}`)
+      // console.log(`phone: ${typeof this.phonenumber} ${this.phonenumber}`)
+      // console.log(`DOB: ${this.DOB} ${typeof this.DOB}`)
+      //  console.log(`address: ${typeof this.address} ${this.address}`)
+
+      this.$emit('register-user', userRegister)
+      this.$refs.observer.reset()
+      console.log(`userRegis: ${typeof userRegister.emailaddress} ${userRegister.emailaddress}`)
+      
       this.enteredEmail = ''
       this.enteredPassword = ''
       this.enteredName = ''
       this.enteredPhone = ''
       this.enteredDate = ''
       this.enteredAddress = ''
-      this.$emit('register-user', userRegister)
+      
+      
+     
     },
 
   }

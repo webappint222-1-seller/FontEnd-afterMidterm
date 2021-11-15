@@ -11,7 +11,7 @@
         <v-tooltip bottom>
           <template v-slot:activator="{ on, attrs }">
             <v-btn depressed @click="$router.push('/billpage')" v-bind="attrs" v-on="on">
-              <v-icon left>shopping_basket</v-icon>
+              <v-icon small>shopping_basket</v-icon>
             </v-btn>
           </template>
           <span>Check Out</span>
@@ -20,7 +20,7 @@
         <v-tooltip bottom>
           <template v-slot:activator="{ on, attrs }">
             <v-btn depressed @click="$router.push('/accountpage')" v-bind="attrs" v-on="on">
-              <v-icon left>manage_accounts</v-icon>
+              <v-icon small>manage_accounts</v-icon>
             </v-btn>
           </template>
           <span>Manage Account</span>
@@ -29,7 +29,7 @@
         <v-tooltip bottom>
           <template v-slot:activator="{ on, attrs }">
             <v-btn depressed @click="$router.push('/registerpage')" v-bind="attrs" v-on="on">
-              <v-icon left>account_circle</v-icon>
+              <v-icon small>account_circle</v-icon>
             </v-btn>
           </template>
           <span>Create Account</span>
@@ -38,10 +38,19 @@
         <v-tooltip bottom>
           <template v-slot:activator="{ on, attrs }">
             <v-btn depressed @click="$router.push('/loginpage')" v-bind="attrs" v-on="on">
-              <v-icon left>login</v-icon>
+              <v-icon small>login</v-icon>
             </v-btn>
           </template>
           <span>Log In</span>
+        </v-tooltip>
+
+        <v-tooltip bottom>
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn depressed @click="$router.push('/'), logOut()" v-bind="attrs" v-on="on">
+              <v-icon small>logout</v-icon>
+            </v-btn>
+          </template>
+          <span>Log Out</span>
         </v-tooltip>
       </v-toolbar>
 
@@ -87,21 +96,38 @@
   </div>
 </template>
   
-  <script>
+<script>
 
 export default {
+  emits: ['logout'],
   name: 'Navbar',
   data() {
     return {
       switchLeftNavi: false,
       selectedHome: false,
       selectedAbout: false,
-      selectedTeam: false
+      selectedTeam: false,
+      url: 'http://localhost:3006',
     }
   },
   components: {
 
   },
+
+  methods: {
+    async logOut() {
+      try {
+        await fetch(this.url + "/clearuser", {
+          method: 'POST',         
+          credentials: 'include',         
+        })
+        this.$emit('logout')
+      }
+      catch (error) { console.log(`Log Out failed: ${error}`) }
+    }
+
+
+  }
 }
 </script>
   

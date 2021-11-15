@@ -2,7 +2,7 @@
   <div class="home">
     <Navbar />
     <v-container class="flex justify-center pt-10">
-      <v-card class="pa-4 text-white" dark >
+      <v-card class="pa-4 text-white" dark>
         <register @register-user="confirmRegis" />
         <!-- <v-card>
         <button @click="confirm()">
@@ -18,18 +18,20 @@
 import Navbar from "@/components/Navbar.vue";
 import Register from "@/components/Register.vue";
 
-
 export default {
-  name: "Home",
+  name: "RegisterPage",
   data() {
     return {
-      url: " http://localhost:5000/infoAccounts",
-      infoAccounts: [],
+      // url: " http://localhost:5000/infoAccounts",
+      url: 'http://localhost:3006',      
+      userList: [],
     };
   },
   components: {
     Navbar,
     Register,
+
+
 
     // Member
   },
@@ -45,7 +47,59 @@ export default {
       }
     },
 
+    confirmRegis(infoRegister) {
+      // this.$refs.observer.validate()
+      console.log(`email: ${infoRegister.emailaddress}`)
+      this.$swal.fire({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Confirm'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          // console.log(`account: ${Array.isArray(this.infoAccounts)} ${this.infoAccounts.length}`)
+          console.log(`regis: ${Array.isArray(infoRegister)} ${infoRegister.emailaddress}`)
+          console.log(`userList: ${Array.isArray(this.userList)} ${this.userList}`)
+          // console.log(`infoAccounts: ${this.infoAccounts[0].emailaddress}`)
+          // console.log(`value: ${this.infoAccounts = this.infoAccounts.filter((info) => info.emailaddress == infoRegister.emailaddress)}`)
+          this.userList = this.userList.filter(
+
+            (info) =>
+              info.emailaddress == infoRegister.emailaddress
+            // info.password == infoRegister.password
+
+          );
+
+          if (this.userList.length !== 0) {
+            if (
+              this.userList[0].emailaddress == infoRegister.emailaddress
+            ) {
+              this.$swal.fire(
+                'Register failed!',
+                'Your email has used please try again.',
+                'error'
+              )
+              // location.reload();
+            }
+          } else {
+            this.addNewRegister(infoRegister)
+            this.$swal.fire(
+              'Registered!',
+              'Your has been registered.',
+              'success'
+            )
+            this.$router.push('/loginpage');
+          }
+        }
+      })
+    },
+
+
     async addNewRegister(infoRegister) {
+
       // this.infoAccounts = this.infoAccounts.filter(
       //   (info) =>
       //     info.email == infoRegister.email
@@ -60,68 +114,58 @@ export default {
       //   }
       // } else {
       // this.$alert("Registe success");
-      const res = await fetch(this.url, {
+
+      console.log(`email: ${typeof infoRegister.emailaddress} ${infoRegister.emailaddress}`)
+      console.log(`pass: ${typeof infoRegister.password} ${infoRegister.password}`)
+      console.log(`name: ${typeof infoRegister.name} ${infoRegister.name}`)
+      console.log(`phone: ${typeof infoRegister.phonenumber} ${infoRegister.phonenumber}`)
+      console.log(`dob: ${typeof infoRegister.dob} ${infoRegister.dob}`)
+      console.log(`address: ${typeof infoRegister.address} ${infoRegister.address}`)
+
+      const formData = new FormData()
+      formData.append('emailaddress', infoRegister.emailaddress)
+      formData.append('password', infoRegister.password)
+      formData.append('name', infoRegister.name)
+      formData.append('phonenumber', infoRegister.phonenumber)
+      formData.append('dob', infoRegister.dob)
+      formData.append('address', infoRegister.address)
+
+      const res = await fetch(this.url + "/formdatausersupload", {
         method: 'POST',
-        headers: {
-          'Content-type': 'application/json'
-        },
-        body: JSON.stringify({
-          email: infoRegister.email,
-          password: infoRegister.password,
-          name: infoRegister.name,
-          phone: infoRegister.phone,
-          date: infoRegister.date,
-          address: infoRegister.address
-        })
+        // headers: {
+        //   'Content-type': 'application/json'
+        // },
+        // body: JSON.stringify({
+        //   emailaddress: this.emailaddress,
+        //   password: this.password,
+        //   name: this.name,
+        //   phonenumber: this.phonenumber,
+        //   DOB: this.DOB,
+        //   address: this.address
+        // })
+        body: formData
       })
       const data = await res.json()
       this.infoResults = [...this.infoResults, data]
       // this.$alert("Registe success");
+      console.log(`save`)
+      // this.$refs.observer.validate()
+    }
+    ,
+    async getUser() {
+      try {
+        const res = await fetch(this.url + "/customers")
+        const resuserdata = await res.json()
+        return resuserdata
+      }
+      catch (error) {
+        console.log(`getuser False!!! ${error}`)
+      }
+    }
+    ,
 
     
-    },
 
-     confirmRegis(infoRegister) {
-       console.log(`email: ${infoRegister.email}`)
-      this.$swal.fire({
-        title: 'Are you sure?',
-        text: "You won't be able to revert this!",
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Confirm'
-      }).then((result) => {
-        if (result.isConfirmed) {
-          this.infoAccounts = this.infoAccounts.filter(
-            (info) =>
-              info.email == infoRegister.email
-            // info.password == infoRegister.password
-          );
-          if (this.infoAccounts.length !== 0) {
-            if (
-              this.infoAccounts[0].email == infoRegister.email
-            ) {
-               this.$swal.fire(
-              'Register failed!',
-              'Your email has used please try again.',
-              'error'
-            )             
-              // location.reload();
-            }
-          } else {
-            this.addNewRegister(infoRegister)
-            this.$swal.fire(
-              'Registered!',
-              'Your has been registered.',
-              'success'
-            )
-          }
-        }
-      })
-    },
-
-    
     // validateInfo(infoRegister) {
 
     //   this.infoAccounts = this.infoAccounts.filter(
@@ -148,6 +192,7 @@ export default {
 
   async created() {
     this.infoAccounts = await this.fetchinfoRegister();
+    this.userList = await this.getUser();
   },
 };
 
