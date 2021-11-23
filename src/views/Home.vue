@@ -194,22 +194,16 @@
               <v-card dark flat class="w-auto h-auto my-4 py-4" color="#C0C0C0">
                 <v-layout wrap>
                   <v-row class="justify-center">
-                    <v-card-text class="text-sm w-40 overflow-ellipsis black--text">
-                      <span>{{ cInfo.product_name }}</span>
+                    <v-card-text class="text-sm w-40  black--text">
+                      <span class= "font-medium">{{ cInfo.product_name }}</span>
                     </v-card-text>
                     <v-card-text class="text-sm w-40 black--text">
-                      <ul class>
-                        <li>
-                          <span class>Quantity:</span>
-                        </li>
-                        <li class>
-                          <span class>{{ cInfo.order_quantity }}</span>
-                        </li>
-                      </ul>
+                      <span class>Quantity: {{ cInfo.order_quantity }}</span>
+                      
                     </v-card-text>
 
-                    <v-card-actions class>
-                      <v-btn @click="deleteCart(cInfo.id)" color="red darken-4">
+                    <v-card-actions class="">
+                      <v-btn @click="deleteCart(cInfo.order_id)" color="red darken-4">
                         <v-icon>delete</v-icon>
                       </v-btn>
                     </v-card-actions>
@@ -471,6 +465,7 @@ export default {
       try {
         const res = await fetch(this.url + "/formdataupload", {
           method: 'POST',
+          credentials: 'include',
           // headers: {
           //   'content-type': 'application/json'
           // },
@@ -508,22 +503,18 @@ export default {
       catch (error) { console.log(`save failed: ${error}`) }
     },
 
-    productInCart(utaInfo) { 
-
-      // this.editId = utaInfo.id
-      // this.nameForm = utaInfo.name
-      // this.bandForm = utaInfo.band
+    productInCart(utaInfo) {     
       this.priceForm = utaInfo.price
-      this.productInfo.product_id = utaInfo.product_id
-      // this.defaultQuantity = utaInfo.quantity
-      // this.desForm = utaInfo.des
+      this.product_id = utaInfo.product_id
+      this.nameForm = utaInfo.product_name
 
-    console.log(`cartPrice: ${typeof this.priceForm} ${this.priceForm}`)
+    // console.log(`cartPrice: ${typeof this.priceForm} ${this.priceForm}`)
     // console.log(`cartQuantity: ${typeof utaInfo.quantity} ${utaInfo.quantity}`)
       this.addNewProductToCart({        
         order_price: this.priceForm,
         order_quantity: this.defaultQuantity,
-        product_id: this.productInfo.product_id,
+        product_id: this.product_id,
+        product_name: this.nameForm,
         // userEmail: this.defaultEmail
       })
     },
@@ -533,18 +524,22 @@ export default {
       const formData = new FormData()      
       formData.append('order_price', this.priceForm)
       formData.append('order_quantity', this.defaultQuantity)
-      formData.append('product_id', this.productInfo.product_id)    
+      formData.append('product_id', this.product_id)
+      formData.append('product_name', this.nameForm)    
+       console.log(`----`)
       console.log(`priceincart: ${this.priceForm}`)
       console.log(`quantityincart: ${this.defaultQuantity}`)
-      console.log(`productId: ${this.productInfo.product_id}`)
+      console.log(`productId: ${this.product_id}`)
+      
 
-      // for (let i = 0; i < this.cartInfo.length; i++) {
-      //   if (this.cartInfo[i].name == newProductToCart.name) {
-      //     return this.editQuantity(this.cartInfo[i])
-      //   }
-      // }
+      for (let i = 0; i < this.cartInfo.length; i++) {
+        if (this.cartInfo[i].product_name == this.nameForm) {
+          console.log(`productName2: ${this.nameForm}`)
+          return this.editQuantity(this.cartInfo[i])
+        }
+      }
       try {
-        const res = await fetch(this.url + "/checkout", {
+          await fetch(this.url + "/checkout", {
           method: 'POST',
           credentials: 'include',
           // headers: {
@@ -564,19 +559,21 @@ export default {
           // })
           body: formData
         })
-        const data = await res.json()
+        console.log(`productName: ${this.nameForm}`)
+        this.cartInfo = await this.getCartForm()
+        // const data = await res.json()
         // console.log(`dataid:${data.id}`)
         // this.disabledbtn = true;
         // this.editQuantity(newProductToCart)
         // res.fetchclose()
 
-        this.cartInfo = [...this.cartInfo, data]
+        // this.cartInfo = [...this.cartInfo, data]
 
         const Toast = this.$swal.mixin({
           toast: true,
           position: 'top-end',
           showConfirmButton: false,
-          timer: 2000,
+          timer: 1000,
           timerProgressBar: true,
           didOpen: (toast) => {
             toast.addEventListener('mouseenter', this.$swal.stopTimer)
@@ -593,26 +590,36 @@ export default {
 
 
     },
-    async editQuantity(newQuantity) {
+    async editQuantity() {
+      const formData = new FormData()      
+      formData.append('order_price', this.priceForm)
+      formData.append('order_quantity', this.defaultQuantity)
+      formData.append('order_id', this.cartInfo.order_id)
+
+      console.log(`orderId: ${this.cartInfo.order_id}`)
+
       newQuantity.quantity++
       try {
-        const res = await fetch(`${this.carturl}/${newQuantity.id}`, {
+        const res = await fetch(`${this.url}/checkoutedit/${this.order_id}`, {
           method: 'PUT',
-          headers: {
-            'content-type': 'application/json'
-          },
-          body: JSON.stringify({
-            id: newQuantity.id,
-            name: newQuantity.name,
-            band: newQuantity.band,
-            price: newQuantity.price,
-            des: newQuantity.des,
-            quantity: newQuantity.quantity,
-            totalprice: newQuantity.price * newQuantity.quantity
-          })
+        
+          
+          // headers: {
+          //   'content-type': 'application/json'
+          // },
+          // body: JSON.stringify({
+          //   id: newQuantity.id,
+          //   name: newQuantity.name,
+          //   band: newQuantity.band,
+          //   price: newQuantity.price,
+          //   des: newQuantity.des,
+          //   quantity: newQuantity.quantity,
+          //   totalprice: newQuantity.price * newQuantity.quantity
+          // })
+          body: formData
         })
         const data = await res.json()
-        this.cartInfo = this.cartInfo.map(cInfo => cInfo.id === newQuantity.id ?
+        this.cartInfo = this.cartInfo.map(cInfo => cInfo.id === this.order_id ?
           {
             ...cInfo,
 
@@ -647,7 +654,10 @@ export default {
           credentials: 'include'
         })
         const getcartdata = await res.json()
+        
+        // console.log(`cartdata: ${typeof getcartdata} ${getcartdata.quantity}`)
         return getcartdata
+        
 
       }
       catch (error) { console.log(`get cart failed: ${error}`) }
@@ -674,22 +684,13 @@ export default {
       // console.log(`user: ${this.productInfo[0]}`)
 
     },
-
-
-
-
-    // filterUser() {
-    // this.cartInfo = this.cartInfo.filter(
-    // (info) => 
-    // info.emailaddress == this.defaultEmail
-    // )
-    // },
-
+  
     // DELETE
     async deleteProduct(deleteId) {
       try {
         await fetch(`${this.url}/products/${deleteId}`, {
-          method: 'DELETE'
+          method: 'DELETE',
+          credentials: 'include'
         })
         // this.productInfo = this.productInfo.filter(uta => uta.id !== deleteId)
         this.reloadProduct()
@@ -701,11 +702,13 @@ export default {
 
     async deleteCart(deleteCartId) {
       try {
-        await fetch(`${this.carturl}/${deleteCartId}`, {
-          method: 'DELETE'
+        await fetch(`${this.url}/checkoutdelete/${deleteCartId}`, {
+          method: 'DELETE',
+          
         })
-        this.cartInfo = this.cartInfo.filter(cInfo => cInfo.id !== deleteCartId)
-        this.reloadCart()
+        
+        // this.cartInfo = this.cartInfo.filter(cInfo => cInfo.id !== deleteCartId)
+        this.cartInfo = await this.getCartForm()
       }
       catch (error) {
         console.log(`delete cart failed: ${error}`)
@@ -775,6 +778,7 @@ export default {
         console.log(`id2: ${this.editId}`)
         await fetch(`${this.url}/productupdate/${this.editId}`, {
           method: 'PUT',
+          credentials: 'include',
           // headers: {
           //   'content-type': 'application/json'
           // },
@@ -841,8 +845,7 @@ export default {
 
   // GET-2
   async created() {
-    this.productInfo = await this.getProductForm()
-       
+    this.productInfo = await this.getProductForm()       
     this.userData = await this.getUser();
     this.userRole = this.userData.data.role
     this.cartInfo = await this.getCartForm(); 
