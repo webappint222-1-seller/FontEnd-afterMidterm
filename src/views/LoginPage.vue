@@ -212,7 +212,7 @@ export default {
         })
         //to Home by param
         this.$router.push({path:'/', params: {data:res}});
-        this.$router.params        
+              
 
       }
       catch (error) { console.log(`login: ${error}`) }

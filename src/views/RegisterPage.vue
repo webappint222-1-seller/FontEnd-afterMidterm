@@ -23,7 +23,7 @@ export default {
   data() {
     return {
       // url: " http://localhost:5000/infoAccounts",
-      url: 'http://localhost:3006',      
+      url: 'https://www.utastore.team:3006',      
       userList: [],
     };
   },
@@ -48,6 +48,8 @@ export default {
     },
 
     confirmRegis(infoRegister) {
+      this.reloadUser();
+      console.log(this.userList[0])
       // this.$refs.observer.validate()
       console.log(`email: ${infoRegister.emailaddress}`)
       this.$swal.fire({
@@ -66,11 +68,9 @@ export default {
           // console.log(`infoAccounts: ${this.infoAccounts[0].emailaddress}`)
           // console.log(`value: ${this.infoAccounts = this.infoAccounts.filter((info) => info.emailaddress == infoRegister.emailaddress)}`)
           this.userList = this.userList.filter(
-
             (info) =>
               info.emailaddress == infoRegister.emailaddress
             // info.password == infoRegister.password
-
           );
 
           if (this.userList.length !== 0) {
@@ -152,19 +152,26 @@ export default {
       // this.$refs.observer.validate()
     }
     ,
-    async getUser() {
+    async getAllUser() {
       try {
-        const res = await fetch(this.url + "/customers")
-        const resuserdata = await res.json()
-        return resuserdata
+        const res = await fetch(this.url + "/getalluser", {
+          credentials: 'include'
+        })
+        const getuserdata = await res.json()
+        return getuserdata
       }
       catch (error) {
-        console.log(`getuser False!!! ${error}`)
-      }
-    }
-    ,
+        console.log(`get user failed: ${error}`)
 
-    
+      }
+
+
+      // console.log(`user: ${this.productInfo[0]}`)
+
+    },
+    async reloadUser(){
+        this.userList = await this.getAllUser()
+    }
 
     // validateInfo(infoRegister) {
 
@@ -192,7 +199,7 @@ export default {
 
   async created() {
     this.infoAccounts = await this.fetchinfoRegister();
-    this.userList = await this.getUser();
+    this.userList = await this.getAllUser();
   },
 };
 

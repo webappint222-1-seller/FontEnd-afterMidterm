@@ -1,6 +1,6 @@
 <template>
   <div class="bill">
-    <Navbar />
+    <Navbar @logout="logOutLocal" :role="userRole" />
     <v-container class="flex">
       <v-layout column>
         <v-flex xs12 sm12 md12 lg12 class="justify-center">
@@ -19,7 +19,7 @@
                         <span>Order Price: {{ cInfo.price }} yen</span>
                       </li>
                       <li>
-                        <span>Total Order Price: {{ cInfo.totalprice }} yen</span>
+                        <span>Total Order Price: {{ cInfo.total_price_product_id }} yen</span>
                       </li>
                       <li>
                         <span>Quantity: {{ cInfo.order_quantity }}</span>
@@ -33,7 +33,7 @@
                     <template>
                       <vue-numeric-input
                         @change="editQuantityInCart(cInfo)"
-                        v-model="cInfo.quantity"
+                        v-model="cInfo.order_quantity"
                         :min="1"
                         :max="10"
                         :inputtable="false"
@@ -45,7 +45,11 @@
                     </template>
                   </li>
                   <li>
-                    <v-btn @click="deleteCart(cInfo.order_id)" color="red darken-4" class="ml-24 mb-2">
+                    <v-btn
+                      @click="deleteCart(cInfo.order_id)"
+                      color="red darken-4"
+                      class="ml-24 mb-2"
+                    >
                       <v-icon>delete</v-icon>
                     </v-btn>
                   </li>
@@ -93,16 +97,21 @@ import VueNumericInput from 'vue-numeric-input'
 
 export default {
   name: 'Bill',
+  // mounted() {
+  //   this.created() 
+  // },
   data() {
     return {
       cartInfo: [],
       totalQuantity: 0,
       totalPrice: 0,
       // url: 'http://localhost:5001/productInfo',
+      // url: 'https://www.utastore.team:3006',
       url: 'http://localhost:3006',
-      carturl: 'http://localhost:5002/cartInfo',
+      // carturl: 'http://localhost:5002/cartInfo',
       click: false,
-      value: 1
+      value: 1,
+      userData: null,
       // q: ''
 
     }
@@ -115,15 +124,27 @@ export default {
 
   },
   methods: {
-    // async getCartForm() {
-    //   try {
-    //     const res = await fetch(this.carturl)
-    //     const getcartdata = await res.json()
-    //     return getcartdata
+    //GET
+    async getUser() {
+      if (document.cookie == null) { return }
+      try {
+        const res = await fetch(this.url + "/getuser", {
+          credentials: 'include'
+        })
+        const getuserdata = await res.json()
+        console.log(`usedata: ${typeof getuserdata} ${getuserdata.data.name}`)
 
-    //   }
-    //   catch (error) { console.log(`get summary failed: ${error}`) }
-    // },
+        return getuserdata
+      }
+      catch (error) {
+        console.log(`get user failed: ${error}`)
+
+      }
+
+
+      // console.log(`user: ${this.productInfo[0]}`)
+
+    },
 
     async getCartForm() {
       try {
@@ -131,10 +152,10 @@ export default {
           credentials: 'include'
         })
         const getcartdata = await res.json()
-        
+
         // console.log(`cartdata: ${typeof getcartdata} ${getcartdata.quantity}`)
         return getcartdata
-        
+
 
       }
       catch (error) { console.log(`get cart failed: ${error}`) }
@@ -144,11 +165,11 @@ export default {
       try {
         await fetch(`${this.url}/checkoutdelete/${deleteCartId}`, {
           method: 'DELETE',
-          
+
         })
         this.cartInfo = await this.getCartForm()
         this.cartInfo = this.cartInfo.filter(cInfo => cInfo.id !== deleteCartId)
-        
+
       }
       catch (error) {
         console.log(`delete cart failed: ${error}`)
@@ -171,25 +192,36 @@ export default {
     },
 
 
-    async editQuantityInCart(newCartQuantity) {
+    async editQuantityInCart(product) {
+      product.total_price_product_id = product.order_price * product.order_quantity
+      const formData = new FormData()
+      formData.append('order_quantity', product.order_quantity)
+      formData.append('total_price_product_id', product.total_price_product_id)
+      formData.append('order_id', product.order_id)
+
+      console.log(`orderId: ${product.order_id}`)
+
       try {
-        const res = await fetch(`${this.carturl}/${newCartQuantity.id}`, {
+        const res = await fetch(`${this.url}/checkoutedit/${product.order_id}`, {
           method: 'PUT',
-          headers: {
-            'content-type': 'application/json'
-          },
-          body: JSON.stringify({
-            id: newCartQuantity.id,
-            name: newCartQuantity.name,
-            band: newCartQuantity.band,
-            price: newCartQuantity.price,
-            des: newCartQuantity.des,
-            quantity: newCartQuantity.quantity,
-            totalprice: newCartQuantity.price * newCartQuantity.quantity
-          })
+
+
+          // headers: {
+          //   'content-type': 'application/json'
+          // },
+          // body: JSON.stringify({
+          //   id: newQuantity.id,
+          //   name: newQuantity.name,
+          //   band: newQuantity.band,
+          //   price: newQuantity.price,
+          //   des: newQuantity.des,
+          //   quantity: newQuantity.quantity,
+          //   totalprice: newQuantity.price * newQuantity.quantity
+          // })
+          body: formData
         })
         const data = await res.json()
-        this.cartInfo = this.cartInfo.map(cInfo => cInfo.id === newCartQuantity.id ?
+        this.cartInfo = this.cartInfo.map(cInfo => cInfo.id === this.order_id ?
           {
             ...cInfo,
 
@@ -214,7 +246,7 @@ export default {
       console.log(`in loop`)
       for (let i = 0; i < this.cartInfo.length; i++) {
         // let q = this.q
-        this.totalQuantity += this.cartInfo[i].quantity
+        this.totalQuantity += this.cartInfo[i].order_quantity
         this.click = true;
       }
 
@@ -223,7 +255,7 @@ export default {
     countPrice() {
       console.log(`in price ${this.cartInfo[0].totalprice}`)
       for (let i = 0; i < this.cartInfo.length; i++) {
-        this.totalPrice += this.cartInfo[i].totalprice
+        this.totalPrice += this.cartInfo[i].total_price_product_id
         this.click = true;
       }
     },
@@ -250,7 +282,7 @@ export default {
           this.deleteAfterCart()
 
 
-        }
+        } else { this.totalQuantity = 0, this.totalPrice = 0 }
 
       })
 
@@ -260,7 +292,8 @@ export default {
 
   async created() {
     this.cartInfo = await this.getCartForm()
-
+    this.userData = await this.getUser();
+    this.userRole = this.userData.data.role
   }
 
 }

@@ -103,33 +103,6 @@
         </div>      
       </v-flex>
     </v-container>
-    <!-- ----------------------------------------------------------------------------------------------------------- -->
-    <!-- Dummy -->
-    <!-- <v-container class="flex mb-40">
-      <v-layout row wrap>
-        <v-flex xs12 sm6 md6 lg3 wrap v-for="p in products" :key="p.title" class="justify-center">
-          <v-card dark flat class="pa-2 w-44 h-auto my-10">
-            <v-responsive>
-              <img :src="p.pic" class="w-40 h-40" />
-            </v-responsive>
-            <v-card-text class="justify-center text-xs break-words white--text">
-              <ul>
-                <li>{{ p.title }}</li>
-                <li class="pt-2">{{ p.band }}</li>
-                <li class="pt-2">{{ p.price }}</li>
-                <li class="pt-2">{{ p.des }}</li>
-              </ul>
-            </v-card-text>
-
-            <v-card-actions>
-              <v-btn @click="dummyProductInCart(p)" color="#FFB6C1">
-                <v-icon>shopping_cart</v-icon>
-              </v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-flex>
-      </v-layout>
-    </v-container>-->
 
     <!---------------------------------------------------------------------------------------------------------------->
 
@@ -154,7 +127,7 @@
 
             <div v-if="userRole == 2">
               <v-card-actions class="justify-center">
-                <v-btn @click.prevent="productInCart(uta)" color="#FFB6C1" small>
+                <v-btn @click.prevent="productInCart(uta),reloadCart()" color="#FFB6C1" small>
                   <v-icon small>shopping_cart</v-icon>
                 </v-btn>
               </v-card-actions>
@@ -246,7 +219,7 @@
 
 import Navbar from '@/components/Navbar.vue'
 import Footer from '@/components/Footer.vue'
-// import LoginPage from '@/views/LoginPage.vue'
+
 import { required, max, max_value, numeric } from 'vee-validate/dist/rules'
 import { extend, ValidationObserver, ValidationProvider, setInteractionMode } from 'vee-validate'
 import GoTop from '@inotom/vue-go-top';
@@ -558,9 +531,9 @@ export default {
 
           // })
           body: formData
-        })
+        })  
         console.log(`productName: ${this.nameForm}`)
-        this.cartInfo = await this.getCartForm()
+        
         // const data = await res.json()
         // console.log(`dataid:${data.id}`)
         // this.disabledbtn = true;
@@ -585,22 +558,24 @@ export default {
           icon: 'success',
           title: 'Add to cart successfully'
         })
+        this.cartInfo = await this.getCartForm()
       }
       catch (error) { console.log(`add to cart failed: ${error}`) }
 
 
     },
-    async editQuantity() {
+    async editQuantity(product) {
+      product.order_quantity ++
+      product.total_price_product_id = product.order_price * product.order_quantity
       const formData = new FormData()      
-      formData.append('order_price', this.priceForm)
-      formData.append('order_quantity', this.defaultQuantity)
-      formData.append('order_id', this.cartInfo.order_id)
+      formData.append('order_quantity', product.order_quantity)
+      formData.append('total_price_product_id', product.total_price_product_id)
+      formData.append('order_id', product.order_id)
 
-      console.log(`orderId: ${this.cartInfo.order_id}`)
+      console.log(`orderId: ${product.order_id}`)
 
-      newQuantity.quantity++
       try {
-        const res = await fetch(`${this.url}/checkoutedit/${this.order_id}`, {
+       await fetch(`${this.url}/checkoutedit/${product.order_id}`, {
           method: 'PUT',
         
           
@@ -618,19 +593,20 @@ export default {
           // })
           body: formData
         })
-        const data = await res.json()
-        this.cartInfo = this.cartInfo.map(cInfo => cInfo.id === this.order_id ?
-          {
-            ...cInfo,
+        this.cartInfo = await this.getCartForm(); 
+        // const data = await res.json()
+        // this.cartInfo = this.cartInfo.map(cInfo => cInfo.id === this.order_id ?
+        //   {
+        //     ...cInfo,
 
-            name: data.name,
-            band: data.band,
-            price: data.price,
-            des: data.des,
-            quantity: data.quantity,
-            totalprice: data.totalprice
-          } : cInfo
-        )
+        //     name: data.name,
+        //     band: data.band,
+        //     price: data.price,
+        //     des: data.des,
+        //     quantity: data.quantity,
+        //     totalprice: data.totalprice
+        //   } : cInfo
+        // )
       }
       catch (error) { console.log(`add quantity to cart failed: ${error}`), console.log(`${this.cartInfo[0].name}`) }
 
@@ -690,7 +666,7 @@ export default {
       try {
         await fetch(`${this.url}/products/${deleteId}`, {
           method: 'DELETE',
-          credentials: 'include'
+          // credentials: 'include'
         })
         // this.productInfo = this.productInfo.filter(uta => uta.id !== deleteId)
         this.reloadProduct()
@@ -778,7 +754,7 @@ export default {
         console.log(`id2: ${this.editId}`)
         await fetch(`${this.url}/productupdate/${this.editId}`, {
           method: 'PUT',
-          credentials: 'include',
+          // credentials: 'include',
           // headers: {
           //   'content-type': 'application/json'
           // },
@@ -833,9 +809,6 @@ export default {
         this.fileForm = null
         var editImage = document.getElementById("imgid")
         editImage.src = ''
-
-
-
       }
       catch (error) {
         console.log(`edit failed: ${error}`)
