@@ -20,8 +20,8 @@
                 </v-responsive>
               </div>
               <ul>
-                <li class="mb-2">: {{ member.sid }}</li>
-                <li>: {{ member.position }}</li>
+                <li class="mb-2">Student ID: {{ member.sid }}</li>
+                <li>Work Position: {{ member.position }}</li>
               </ul>
             </v-expansion-panel-content>
           </v-expansion-panel>
